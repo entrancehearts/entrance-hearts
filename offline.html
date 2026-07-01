@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>You're Offline — EntranceHearts</title>
+  <link rel="icon" href="icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      font-family:'Inter',sans-serif;
+      background:#06061a;
+      color:rgba(255,255,255,0.93);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      min-height:100vh;overflow:hidden;text-align:center;padding:24px;
+    }
+    .ambient{position:fixed;pointer-events:none;z-index:0;}
+    .amb1{top:-120px;left:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,20,147,0.10),transparent 70%);animation:drift1 20s ease-in-out infinite;}
+    .amb2{bottom:-120px;right:-100px;width:450px;height:450px;border-radius:50%;background:radial-gradient(circle,rgba(110,40,210,0.09),transparent 70%);animation:drift2 24s ease-in-out infinite;}
+    @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,20px)}}
+    @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-25px,-30px)}}
+
+    .card{
+      position:relative;z-index:1;
+      background:rgba(255,255,255,0.055);
+      border:1px solid rgba(255,255,255,0.09);
+      border-radius:28px;padding:40px 32px;
+      max-width:360px;width:100%;
+    }
+    .wifi-icon{
+      width:80px;height:80px;
+      background:rgba(255,20,147,0.1);
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      margin:0 auto 24px;
+      font-size:2.2rem;
+      animation:pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,20,147,0.3)}50%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(255,20,147,0)}}
+
+    h1{font-size:1.5rem;font-weight:800;margin-bottom:8px;}
+    .sub{color:rgba(255,255,255,0.55);font-size:0.88rem;line-height:1.6;margin-bottom:28px;}
+
+    .tips{
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;padding:16px;margin-bottom:24px;text-align:left;
+    }
+    .tips-title{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,107,157,0.9);margin-bottom:10px;}
+    .tip{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:0.8rem;color:rgba(255,255,255,0.6);line-height:1.5;}
+    .tip:last-child{margin-bottom:0;}
+    .tip-dot{width:5px;height:5px;border-radius:50%;background:#FF1493;flex-shrink:0;margin-top:5px;}
+
+    .retry-btn{
+      width:100%;background:linear-gradient(135deg,#FF1493,#FF6B9D);
+      color:#fff;border:none;border-radius:16px;
+      padding:14px;font-size:0.9rem;font-weight:700;font-family:'Inter',sans-serif;
+      cursor:pointer;transition:all 0.2s;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .retry-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,20,147,0.35);}
+    .retry-btn:active{transform:translateY(0);}
+    .retry-btn.loading{opacity:0.7;cursor:not-allowed;}
+
+    .logo{
+      position:relative;z-index:1;
+      font-size:0.85rem;font-weight:800;
+      background:linear-gradient(135deg,#FF1493,#FF6B9D);
+      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+      margin-top:24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient amb1"></div>
+  <div class="ambient amb2"></div>
+
+  <div class="card">
+    <div class="wifi-icon">📡</div>
+    <h1>You're Offline</h1>
+    <p class="sub">No internet connection detected. Check your Wi-Fi or mobile data and try again.</p>
+
+    <div class="tips">
+      <div class="tips-title">While offline you can still:</div>
+      <div class="tip"><div class="tip-dot"></div>View cached pages you've already visited</div>
+      <div class="tip"><div class="tip-dot"></div>Read study materials you've opened before</div>
+      <div class="tip"><div class="tip-dot"></div>Use the study timer for focus sessions</div>
+    </div>
+
+    <button class="retry-btn" onclick="retryConnection(this)">
+      <span>↻</span> Try Again
+    </button>
+  </div>
+
+  <div class="logo">💕 EntranceHearts</div>
+
+  <script>
+    function retryConnection(btn) {
+      btn.classList.add('loading');
+      btn.textContent = 'Checking…';
+      setTimeout(() => {
+        if (navigator.onLine) {
+          window.history.back();
+          setTimeout(() => location.reload(), 300);
+        } else {
+          btn.classList.remove('loading');
+          btn.innerHTML = '<span>↻</span> Try Again';
+        }
+      }, 1500);
+    }
+
+    window.addEventListener('online', () => {
+      window.history.back();
+      setTimeout(() => location.reload(), 300);
+    });
+  </script>
+</body>
+</html>
