@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>💝 Who Liked You — EntranceHearts</title>
+  <link rel="icon" href="icon-192.png"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#06061a;--card:rgba(255,255,255,0.055);--border:rgba(255,255,255,0.09);--text:rgba(255,255,255,0.93);--muted:rgba(255,255,255,0.5);--dim:rgba(255,255,255,0.35);--pink:#FF1493;--nav-h:60px;}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;}
+    body{display:flex;flex-direction:column;}
+    .amb{position:fixed;pointer-events:none;border-radius:50%;z-index:0;}
+    .amb1{top:-80px;left:-60px;width:350px;height:350px;background:radial-gradient(circle,rgba(255,20,147,0.09),transparent 70%);}
+    .amb2{bottom:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(110,40,210,0.08),transparent 70%);}
+    nav.navbar{position:sticky;top:0;z-index:200;height:var(--nav-h);background:rgba(6,6,26,0.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;padding-top:env(safe-area-inset-top,0px);}
+    .nav-back{background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:6px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+    .nav-back:hover{background:rgba(255,255,255,0.07);color:var(--text);}
+    .nav-title{font-size:1rem;font-weight:800;flex:1;}
+    .nav-count{font-size:0.75rem;color:var(--muted);font-weight:600;}
+    .page{flex:1;overflow-y:auto;padding:16px;max-width:560px;width:100%;margin:0 auto;position:relative;z-index:1;}
+    .tab-row{display:flex;gap:8px;margin-bottom:16px;}
+    .tab-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:50px;padding:7px 16px;font-size:0.78rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.18s;}
+    .tab-btn.active{background:rgba(255,20,147,0.12);border-color:rgba(255,20,147,0.3);color:var(--pink);}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+    .liker-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all 0.25s;position:relative;}
+    .liker-card.done{opacity:0.4;pointer-events:none;}
+    .liker-card:hover{transform:translateY(-2px);border-color:rgba(255,20,147,0.2);}
+    .liker-photo{width:100%;aspect-ratio:1;background:linear-gradient(135deg,var(--pink),#FF6B9D);display:flex;align-items:center;justify-content:center;font-size:2.8rem;font-weight:800;position:relative;overflow:hidden;}
+    .liker-photo img{width:100%;height:100%;object-fit:cover;}
+    .liker-new-tag{position:absolute;top:8px;left:8px;background:var(--pink);color:#fff;font-size:0.58rem;font-weight:800;padding:2px 7px;border-radius:50px;letter-spacing:0.5px;}
+    .liker-body{padding:10px 10px 12px;}
+    .liker-name{font-size:0.88rem;font-weight:800;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .liker-meta{font-size:0.68rem;color:var(--muted);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .liker-actions{display:flex;gap:6px;}
+    .btn-like-back{flex:1;background:linear-gradient(135deg,var(--pink),#FF6B9D);border:none;color:#fff;border-radius:50px;padding:8px 0;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.18s;}
+    .btn-like-back:hover{transform:scale(1.03);box-shadow:0 4px 14px rgba(255,20,147,0.3);}
+    .btn-skip{background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:8px 12px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.18s;}
+    .btn-skip:hover{background:rgba(255,255,255,0.12);}
+    .empty{text-align:center;padding:60px 20px;color:var(--muted);}
+    .empty-icon{font-size:3.5rem;margin-bottom:16px;display:block;animation:float 3s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .empty h3{font-size:1.1rem;font-weight:800;margin-bottom:8px;color:var(--text);}
+    .empty p{font-size:0.82rem;line-height:1.6;}
+    .empty a{color:var(--pink);font-weight:700;text-decoration:none;}
+    .sk-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:pulse 1.5s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:0.6}50%{opacity:0.3}}
+    .sk-photo{width:100%;aspect-ratio:1;background:rgba(255,255,255,0.06);}
+    .sk-body{padding:10px;}
+    .sk-line{height:10px;background:rgba(255,255,255,0.06);border-radius:6px;margin-bottom:6px;}
+    .sk-line.w60{width:60%;}
+    .sk-line.w40{width:40%;}
+    .sk-btn-row{display:flex;gap:6px;margin-top:8px;}
+    .sk-btn{height:30px;border-radius:50px;background:rgba(255,255,255,0.06);flex:1;}
+    .match-banner{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;}
+    .match-banner.show{display:flex;}
+    .match-banner-bd{position:absolute;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);}
+    .match-banner-card{position:relative;z-index:1;background:linear-gradient(135deg,rgba(255,20,147,0.15),rgba(110,40,210,0.15));border:1px solid rgba(255,20,147,0.3);border-radius:28px;padding:40px 32px;text-align:center;max-width:320px;width:90%;}
+    .match-banner-icon{font-size:3.5rem;display:block;margin-bottom:12px;animation:heartbeat 1s ease-in-out infinite;}
+    @keyframes heartbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+    .match-banner-title{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+    .match-banner-sub{font-size:0.85rem;color:var(--muted);margin-bottom:24px;}
+    .match-banner-btns{display:flex;flex-direction:column;gap:10px;}
+    .btn-chat-now{background:linear-gradient(135deg,var(--pink),#FF6B9D);border:none;color:#fff;border-radius:50px;padding:13px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;display:block;transition:all 0.2s;}
+    .btn-chat-now:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,20,147,0.4);}
+    .btn-later{background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:12px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;}
+    .btn-later:hover{background:rgba(255,255,255,0.12);}
+    .bottom-nav{height:64px;padding-bottom:env(safe-area-inset-bottom);background:rgba(6,6,26,0.97);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;flex-shrink:0;position:relative;z-index:100;}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--dim);text-decoration:none;font-size:0.58rem;font-weight:600;padding:6px 14px;border-radius:14px;transition:all 0.2s;position:relative;}
+    .nav-item span:first-child{font-size:1.2rem;}
+    .nav-item:hover,.nav-item.active{color:#FF6B9D;}
+    .chat-unread-badge{position:absolute;top:0;right:4px;background:linear-gradient(135deg,#FF1493,#c0105e);color:#fff;font-size:0.5rem;font-weight:800;padding:1px 4px;border-radius:20px;min-width:14px;text-align:center;line-height:1.6;border:2px solid #06061a;pointer-events:none;display:none;}
+  </style>
+</head>
+<body>
+  <div class="amb amb1"></div>
+  <div class="amb amb2"></div>
+
+  <nav class="navbar">
+    <button class="nav-back" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+    <div class="nav-title">💝 Who Liked You</div>
+    <div class="nav-count" id="likeCount">Loading…</div>
+  </nav>
+
+  <div class="page">
+    <div class="tab-row">
+      <button class="tab-btn active" id="tabNew" onclick="switchTab('new')">✨ New</button>
+      <button class="tab-btn" id="tabAll" onclick="switchTab('all')">All Likes</button>
+    </div>
+    <div class="grid" id="likersGrid">
+      <div class="sk-card"><div class="sk-photo"></div><div class="sk-body"><div class="sk-line"></div><div class="sk-line w60"></div><div class="sk-btn-row"><div class="sk-btn"></div><div class="sk-btn w40"></div></div></div></div>
+      <div class="sk-card"><div class="sk-photo"></div><div class="sk-body"><div class="sk-line"></div><div class="sk-line w60"></div><div class="sk-btn-row"><div class="sk-btn"></div><div class="sk-btn w40"></div></div></div></div>
+      <div class="sk-card"><div class="sk-photo"></div><div class="sk-body"><div class="sk-line"></div><div class="sk-line w60"></div><div class="sk-btn-row"><div class="sk-btn"></div><div class="sk-btn w40"></div></div></div></div>
+      <div class="sk-card"><div class="sk-photo"></div><div class="sk-body"><div class="sk-line"></div><div class="sk-line w60"></div><div class="sk-btn-row"><div class="sk-btn"></div><div class="sk-btn w40"></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="match-banner" id="matchBanner">
+    <div class="match-banner-bd" onclick="closeMatchBanner()"></div>
+    <div class="match-banner-card">
+      <span class="match-banner-icon">💕</span>
+      <div class="match-banner-title">It's a Match!</div>
+      <div class="match-banner-sub" id="matchBannerSub">You and this person liked each other!</div>
+      <div class="match-banner-btns">
+        <a href="chat.html" class="btn-chat-now" id="matchBannerChat">💬 Start Chatting</a>
+        <button class="btn-later" onclick="closeMatchBanner()">Maybe Later</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="browse.html" class="nav-item"><span>🔥</span><span>Discover</span></a>
+    <a href="chat.html" class="nav-item"><span>💬</span><span>Chats</span><span class="chat-unread-badge"></span></a>
+    <a href="who-liked-me.html" class="nav-item active"><span>❤️</span><span>Likes</span></a>
+    <a href="profile.html" class="nav-item"><span>👤</span><span>Profile</span></a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://dzfrwjuugeqzsxrykgjc.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZnJ3anV1Z2VxenN4cnlrZ2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzc3MzQsImV4cCI6MjA5MzcxMzczNH0.ahwhlTxsd9v69hVskZv6j34jZDRktEcv6by4kwLkuNQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    let currentUserId = null;
+    let allLikers = [];
+    let matchedWithMe = [];
+    let currentTab = 'new';
+    let lastSeenCount = parseInt(localStorage.getItem('eh_likes_seen_count') || '0', 10);
+    let matchedPartnerId = null;
+
+    const categoryLabels = { CEE:'🏥 CEE', IOE:'⚙️ IOE', '+2':'📖 +2', Management:'🏦 Mgmt', BIM:'💻 BIM', BBA:'📊 BBA', Law:'⚖️ Law', Other:'🎓 Other' };
+
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function getAv(p) {
+      if (p.avatar) return `<img src="${esc(p.avatar)}" onerror="this.parentElement.textContent='${(p.name||'?')[0].toUpperCase()}'"/>`;
+      return (p.name||'?')[0].toUpperCase();
+    }
+
+    function renderGrid(likers) {
+      const grid = document.getElementById('likersGrid');
+      if (!likers.length) {
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">
+          <span class="empty-icon">💝</span>
+          <h3>${currentTab === 'new' ? 'No new likes yet' : 'No likes yet'}</h3>
+          <p>${currentTab === 'new' ? 'When someone new likes you, they\'ll appear here.' : 'Complete your <a href="profile.html">profile</a> and keep browsing to attract more matches!'}</p>
+        </div>`;
+        return;
+      }
+      grid.innerHTML = likers.map(p => {
+        const isNew = !p.seenBefore;
+        return `<div class="liker-card" id="liker-${p.id}">
+          <div class="liker-photo">${isNew ? '<span class="liker-new-tag">NEW</span>' : ''}${getAv(p)}</div>
+          <div class="liker-body">
+            <div class="liker-name">${esc(p.name || 'Anonymous')}</div>
+            <div class="liker-meta">${categoryLabels[p.category] || p.category || 'Student'}${p.location ? ' · 📍'+esc(p.location) : ''}</div>
+            <div class="liker-actions">
+              <button class="btn-like-back" onclick="likeBack('${p.id}','${esc(p.name||'them')}')">❤️ Like Back</button>
+              <button class="btn-skip" onclick="skipLiker('${p.id}')">✕</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabNew').classList.toggle('active', tab === 'new');
+      document.getElementById('tabAll').classList.toggle('active', tab === 'all');
+      const seenIds = JSON.parse(localStorage.getItem('eh_seen_likers') || '[]');
+      if (tab === 'new') {
+        renderGrid(allLikers.filter(p => !seenIds.includes(p.id)));
+      } else {
+        renderGrid(allLikers);
+      }
+    }
+
+    async function likeBack(userId, name) {
+      try {
+        await supabaseClient.from('likes').insert({ from_user: currentUserId, to_user: userId });
+      } catch(e) {}
+      matchedPartnerId = userId;
+      document.getElementById('matchBannerSub').textContent = `You and ${name} liked each other! 💕`;
+      document.getElementById('matchBannerChat').href = `chat.html?uid=${userId}`;
+      document.getElementById('matchBanner').classList.add('show');
+      document.getElementById('liker-' + userId)?.classList.add('done');
+      if (navigator.vibrate) navigator.vibrate([40, 30, 80]);
+    }
+
+    function skipLiker(userId) {
+      const seenIds = JSON.parse(localStorage.getItem('eh_seen_likers') || '[]');
+      if (!seenIds.includes(userId)) { seenIds.push(userId); localStorage.setItem('eh_seen_likers', JSON.stringify(seenIds)); }
+      document.getElementById('liker-' + userId)?.classList.add('done');
+      setTimeout(() => { document.getElementById('liker-' + userId)?.remove(); }, 400);
+    }
+
+    function closeMatchBanner() {
+      document.getElementById('matchBanner').classList.remove('show');
+    }
+
+    async function init() {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) { location.href = 'login.html'; return; }
+      currentUserId = user.id;
+
+      const { data: likes, error } = await supabaseClient
+        .from('likes')
+        .select('from_user, created_at')
+        .eq('to_user', currentUserId)
+        .order('created_at', { ascending: false });
+
+      if (error || !likes || !likes.length) {
+        document.getElementById('likersGrid').innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-icon">💝</span><h3>No likes yet</h3><p>Complete your <a href="profile.html">profile</a> and keep discovering to attract likes!</p></div>`;
+        document.getElementById('likeCount').textContent = '0 likes';
+        // Clear badge
+        localStorage.setItem('eh_likes_seen_count', '0');
+        return;
+      }
+
+      const fromIds = [...new Set(likes.map(l => l.from_user))];
+      document.getElementById('likeCount').textContent = `${fromIds.length} like${fromIds.length !== 1 ? 's' : ''}`;
+
+      const { data: profiles } = await supabaseClient.from('profiles').select('*').in('id', fromIds);
+      const seenLikers = JSON.parse(localStorage.getItem('eh_seen_likers') || '[]');
+
+      allLikers = (profiles || []).map(p => ({ ...p, seenBefore: seenLikers.includes(p.id) }))
+        .sort((a, b) => (a.seenBefore ? 1 : -1));
+
+      // Clear new likes badge
+      localStorage.setItem('eh_likes_seen_count', String(fromIds.length));
+      localStorage.removeItem('eh_new_likes');
+
+      switchTab('new');
+    }
+
+    init();
+  </script>
+  <script src="chat-badge.js"></script>
+  <div id="offline-bar" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:8000;background:rgba(185,28,28,0.97);backdrop-filter:blur(12px);color:#fff;padding:10px 16px;border-radius:14px;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">📡 No internet — some features may not work</div>
+  <script>(function(){var b=document.getElementById('offline-bar');function u(){b.style.display=navigator.onLine?'none':'block';}window.addEventListener('online',u);window.addEventListener('offline',u);u();})();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
