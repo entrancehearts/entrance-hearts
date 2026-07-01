@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Sign Up — EntranceHearts 💕</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>(function(){const t=localStorage.getItem('eh_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://dzfrwjuugeqzsxrykgjc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZnJ3anV1Z2VxenN4cnlrZ2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzc3MzQsImV4cCI6MjA5MzcxMzczNH0.ahwhlTxsd9v69hVskZv6j34jZDRktEcv6by4kwLkuNQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #06061a;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    /* Vibrant Aurora Background */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .floating-heart {
+      position: absolute;
+      font-size: 1rem;
+      opacity: 0.06;
+      animation: floatHeart linear infinite;
+      pointer-events: none;
+    }
+    @keyframes floatHeart {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.06; }
+      90% { opacity: 0.06; }
+      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+    }
+    .gradient-orb {
+      position: absolute;
+      width: 650px;
+      height: 650px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,20,147,0.15), transparent 65%);
+      top: -220px;
+      right: -160px;
+      animation: floatOrb 18s ease-in-out infinite;
+    }
+    .gradient-orb-bottom {
+      position: absolute;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110,40,220,0.12), transparent 65%);
+      bottom: -200px;
+      left: -150px;
+      animation: floatOrbReverse 22s ease-in-out infinite;
+    }
+    .gradient-orb-cyan {
+      position: absolute;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(20,190,220,0.07), transparent 65%);
+      top: 40%; left: 40%;
+      animation: floatOrbCyan 28s ease-in-out infinite;
+    }
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-25px, 20px) scale(1.06); }
+    }
+    @keyframes floatOrbReverse {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -28px) scale(1.05); }
+    }
+    @keyframes floatOrbCyan {
+      0%, 100% { transform: translate(0,0); }
+      40% { transform: translate(35px,-45px); }
+      70% { transform: translate(-25px,30px); }
+    }
+
+    /* Navbar - Clean Header (No Back Button) */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 14px 24px;
+      background: rgba(6,6,26,0.97);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.09);
+      transition: all 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar.scrolled { padding: 10px 24px; background: rgba(6,6,26,0.99); }
+    .nav-container { max-width: 1280px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .btn-outline-nav {
+      color: rgba(255, 255, 255, 0.65);
+      padding: 8px 22px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      border: 1px solid rgba(255,20,147,0.25);
+    }
+    .btn-outline-nav:hover {
+      border-color: #FF1493;
+      color: #FF6B9D;
+      background: rgba(255,20,147,0.08);
+    }
+
+    /* Auth Page */
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px 60px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .auth-box {
+      background: rgba(18, 18, 26, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 32px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+    .auth-box:hover { border-color: rgba(255, 20, 147, 0.35); }
+    
+    .auth-logo {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      display: inline-block;
+      width: 100%;
+    }
+    .auth-title {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: #ffffff;
+    }
+    .auth-subtitle {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+    }
+    
+    /* Step Indicator */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .step-dot {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s;
+    }
+    .step-dot.active {
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      transform: scaleX(1.1);
+    }
+    
+    /* Messages */
+    .error-msg, .success-msg {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .error-msg {
+      background: rgba(255, 68, 68, 0.1);
+      border-left: 3px solid #ff6666;
+      color: #ffa2a2;
+    }
+    .success-msg {
+      background: rgba(76, 175, 80, 0.08);
+      border-left: 3px solid #6fbf6f;
+      color: #a3e0a3;
+    }
+    
+    /* Form Steps */
+    .form-step {
+      display: none;
+    }
+    .form-step.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .step-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .step-desc {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.65);
+    }
+    .form-group label i {
+      color: #FF6B9D;
+      margin-right: 6px;
+      width: 18px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 13px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 24px;
+      color: white;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #FF1493;
+      background: rgba(255, 20, 147, 0.06);
+      box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.08);
+    }
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+    
+    /* Password Strength */
+    .password-strength {
+      height: 3px;
+      border-radius: 2px;
+      margin-top: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      width: 0%;
+      transition: all 0.3s;
+    }
+    .strength-text {
+      font-size: 0.65rem;
+      margin-top: 5px;
+    }
+    
+    /* Gender Row */
+    .gender-row {
+      display: flex;
+      gap: 12px;
+    }
+    .gender-btn {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,20,147,0.2);
+      border-radius: 30px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .gender-btn.active {
+      border-color: #FF1493;
+      background: rgba(255, 20, 147, 0.1);
+      color: #FF6B9D;
+    }
+    
+    /* Interests Grid */
+    .interest-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .interest-btn {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,20,147,0.2);
+      border-radius: 30px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .interest-btn.active {
+      border-color: #FF1493;
+      background: rgba(255, 20, 147, 0.1);
+      color: #FF6B9D;
+    }
+    
+    /* Photo Upload */
+    .photo-upload-area {
+      border: 2px dashed rgba(255,20,147,0.25);
+      border-radius: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 16px;
+    }
+    .photo-upload-area:hover {
+      border-color: #FF1493;
+      background: rgba(255,20,147,0.04);
+    }
+    .photo-upload-area.has-photo {
+      border-color: #4caf50;
+      background: rgba(76, 175, 80, 0.04);
+    }
+    .upload-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 10px;
+      display: none;
+      border: 2px solid #FF1493;
+    }
+    
+    /* Buttons */
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      border: none;
+      border-radius: 40px;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(255, 20, 147, 0.3);
+    }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .back-btn-step {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid rgba(255,20,147,0.25);
+      border-radius: 40px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.2s;
+    }
+    .back-btn-step:hover {
+      border-color: #FF6B9D;
+      color: #FF6B9D;
+    }
+    
+    /* OTP Input */
+    .otp-wrap {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 24px 0;
+    }
+    .otp-input {
+      width: 48px;
+      height: 54px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,20,147,0.25);
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+    .otp-input:focus {
+      border-color: #FF1493;
+      background: rgba(255, 20, 147, 0.08);
+    }
+    
+    .resend-link {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 16px;
+    }
+    .resend-link button {
+      background: none;
+      border: none;
+      color: #FF6B9D;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+    .resend-link button:disabled {
+      color: rgba(255, 255, 255, 0.3);
+      cursor: not-allowed;
+    }
+    
+    /* Auth Switch & Back Footer */
+    .auth-switch {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .auth-switch a {
+      color: #FF6B9D;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .auth-switch a:hover { color: #FF1493; }
+    
+    /* Back Button Footer */
+    .back-footer {
+      text-align: center;
+      margin-top: 28px;
+    }
+    .back-btn-footer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 40px;
+      padding: 8px 22px;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .back-btn-footer:hover {
+      background: rgba(255, 20, 147, 0.08);
+      border-color: #FF6B9D;
+      color: #FF6B9D;
+      transform: translateX(-3px);
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 550px) {
+      .auth-box { padding: 28px 22px; }
+      .auth-title { font-size: 1.3rem; }
+      .step-dot { width: 35px; }
+      .interest-grid { grid-template-columns: 1fr; }
+      .gender-row { gap: 8px; }
+      .gender-btn { padding: 10px; font-size: 0.75rem; }
+      .otp-input { width: 42px; height: 48px; font-size: 1.1rem; }
+    }
+
+    /* ── DARK / LIGHT MODE ── */
+    [data-theme="light"] body { background: #f4f4f8; color: #1a1a2e; }
+    [data-theme="light"] .navbar { background: rgba(255,255,255,0.97); border-color: rgba(255,20,147,0.15); }
+    [data-theme="light"] .navbar.scrolled { background: rgba(255,255,255,0.99); }
+    [data-theme="light"] .btn-outline-nav { color: rgba(0,0,0,0.6); border-color: rgba(255,20,147,0.2); }
+    [data-theme="light"] .auth-box { background: rgba(255,255,255,0.97); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+    [data-theme="light"] .auth-title { color: #1a1a2e; }
+    [data-theme="light"] .auth-subtitle { color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .step-dot { background: rgba(0,0,0,0.1); }
+    [data-theme="light"] .step-title { color: #1a1a2e; }
+    [data-theme="light"] .step-desc { color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .form-group label { color: rgba(0,0,0,0.65); }
+    [data-theme="light"] input[type="text"],
+    [data-theme="light"] input[type="email"],
+    [data-theme="light"] input[type="password"],
+    [data-theme="light"] input[type="number"],
+    [data-theme="light"] select,
+    [data-theme="light"] textarea {
+      background: rgba(0,0,0,0.04);
+      border-color: rgba(255,20,147,0.2);
+      color: #1a1a2e;
+    }
+    [data-theme="light"] input::placeholder,
+    [data-theme="light"] textarea::placeholder { color: rgba(0,0,0,0.35); }
+    [data-theme="light"] .gender-btn { background: rgba(0,0,0,0.04); border-color: rgba(255,20,147,0.18); color: rgba(0,0,0,0.65); }
+    [data-theme="light"] .gender-btn.selected { background: rgba(255,20,147,0.08); }
+    [data-theme="light"] .interest-tag { background: rgba(0,0,0,0.04); border-color: rgba(255,20,147,0.2); color: rgba(0,0,0,0.65); }
+    [data-theme="light"] .interest-tag.selected { background: rgba(255,20,147,0.1); }
+    [data-theme="light"] .back-btn-step { border-color: rgba(255,20,147,0.2); color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .auth-switch { color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .back-btn-footer { background: rgba(0,0,0,0.04); border-color: rgba(255,20,147,0.18); color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .otp-input { background: rgba(0,0,0,0.04); color: #1a1a2e; }
+    [data-theme="light"] .resend-link { color: rgba(0,0,0,0.45); }
+    [data-theme="light"] .gradient-orb { background: radial-gradient(circle, rgba(255,20,147,0.06), transparent); }
+    [data-theme="light"] .gradient-orb-bottom { background: radial-gradient(circle, rgba(255,107,157,0.04), transparent); }
+    [data-theme="light"] .floating-heart { opacity: 0.06; }
+
+    /* Theme Toggle */
+    .theme-toggle-nav {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255,20,147,0.1);
+      border: 1px solid rgba(255,20,147,0.25);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    [data-theme="light"] .theme-toggle-nav { color: #FF1493; background: rgba(255,20,147,0.08); }
+    .theme-toggle-nav:hover { background: rgba(255,20,147,0.2); transform: scale(1.1); }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="animated-bg">
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb-bottom"></div>
+    <div class="gradient-orb-cyan"></div>
+  </div>
+
+  <!-- Navbar - Clean Header (No Back Button) -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">💕 EntranceHearts</a>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <a href="login.html" class="btn-outline-nav">Login</a>
+        <button class="theme-toggle-nav" onclick="toggleTheme()" id="themeBtn" title="Toggle light/dark"><i class="fas fa-moon" id="themeIcon"></i></button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="auth-page">
+    <div class="auth-box" id="authBox">
+      <div class="auth-logo">💕</div>
+      <div class="auth-title">Create Account</div>
+      <div class="auth-subtitle">Join Nepal's aspirant community</div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+        <div class="step-dot" id="dot3"></div>
+        <div class="step-dot" id="dot4"></div>
+        <div class="step-dot" id="dot5"></div>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="success-msg" id="successMsg"></div>
+
+      <!-- STEP 1: Basic Info -->
+      <div class="form-step active" id="step1">
+        <div class="step-title">Basic Information</div>
+        <div class="step-desc">Step 1 of 5 — Tell us about yourself</div>
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Full Name</label>
+          <input type="text" id="name" placeholder="Your full name"/>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" id="email" placeholder="your@email.com"/>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <input type="password" id="password" placeholder="Min 8 characters" oninput="checkPasswordStrength(this.value)"/>
+          <div class="password-strength" id="strengthBar"></div>
+          <div class="strength-text" id="strengthText"></div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-calendar-alt"></i> Age</label>
+          <input type="number" id="age" placeholder="15-30" min="15" max="30"/>
+        </div>
+        <button class="submit-btn" onclick="goStep1()">Continue →</button>
+      </div>
+
+      <!-- STEP 2: Photo -->
+      <div class="form-step" id="step2">
+        <div class="step-title">Profile Photo</div>
+        <div class="step-desc">Step 2 of 5 — Upload a real face photo</div>
+        <div class="photo-upload-area" id="uploadArea" onclick="document.getElementById('photoInput').click()">
+          <img id="uploadPreview" class="upload-preview"/>
+          <div id="uploadIcon" style="font-size:2rem;margin-bottom:6px">📸</div>
+          <div id="uploadText" style="font-size:0.8rem;color:rgba(255,255,255,0.5)">Tap to upload your photo</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);margin-top:4px">Clear face photo • Max 5MB</div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="previewPhoto(this)"/>
+        <div style="background:rgba(255,20,147,0.05);border:1px solid rgba(255,20,147,0.15);border-radius:12px;padding:10px;margin-bottom:16px;font-size:0.7rem;color:rgba(255,255,255,0.5);text-align:center">
+          ⚠️ Real photos only. Fake images will be removed.
+        </div>
+        <button class="submit-btn" onclick="goStep(3)" id="photoNextBtn" disabled>Continue →</button>
+        <button class="back-btn-step" onclick="goStep(1)">← Back</button>
+      </div>
+
+      <!-- STEP 3: Study Info -->
+      <div class="form-step" id="step3">
+        <div class="step-title">Academic Details</div>
+        <div class="step-desc">Step 3 of 5 — Your exam and background</div>
+        <div class="form-group">
+          <label><i class="fas fa-graduation-cap"></i> I am a</label>
+          <select id="category">
+            <option value="">Select your category</option>
+            <option value="cee">🏥 CEE Aspirant</option>
+            <option value="ioe">⚙️ IOE Aspirant</option>
+            <option value="plus2">📖 +2 Student</option>
+            <option value="management">💼 Management Student</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-map-marker-alt"></i> Location</label>
+          <input type="text" id="location" placeholder="City/District"/>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-venus-mars"></i> Gender</label>
+          <div class="gender-row">
+            <button type="button" class="gender-btn" onclick="selectGender(this,'male')">👨 Male</button>
+            <button type="button" class="gender-btn" onclick="selectGender(this,'female')">👩 Female</button>
+            <button type="button" class="gender-btn" onclick="selectGender(this,'other')">🧑 Other</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-align-left"></i> Bio</label>
+          <input type="text" id="bio" placeholder="Tell something about yourself..."/>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-heart"></i> Looking for</label>
+          <select id="lookingFor">
+            <option value="">Select preference</option>
+            <option value="friendship">🤝 Study Partner / Friendship</option>
+            <option value="relationship">💕 Relationship</option>
+            <option value="both">✨ Both</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-venus-mars"></i> Interested in</label>
+          <div class="gender-row">
+            <button type="button" class="gender-btn" id="pref-male" onclick="selectGenderPref(this,'male')">👨 Male</button>
+            <button type="button" class="gender-btn" id="pref-female" onclick="selectGenderPref(this,'female')">👩 Female</button>
+            <button type="button" class="gender-btn" id="pref-both" onclick="selectGenderPref(this,'both')">✨ Both</button>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="goStep3()">Continue →</button>
+        <button class="back-btn-step" onclick="goStep(2)">← Back</button>
+      </div>
+
+      <!-- STEP 4: Interests -->
+      <div class="form-step" id="step4">
+        <div class="step-title">Your Interests</div>
+        <div class="step-desc">Step 4 of 5 — Pick at least 3</div>
+        <div class="interest-grid">
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">📚 Studying</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">🎵 Music</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">🎮 Gaming</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">📷 Photography</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">⚽ Sports</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">🎨 Art</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">🍕 Foodie</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">✈️ Travel</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">📖 Reading</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">🎬 Movies</button>
+               <button type="button" class="interest-btn" onclick="toggleInterest(this)">💻 Coding</button>
+          <button type="button" class="interest-btn" onclick="toggleInterest(this)">🧘 Fitness</button>
+        </div>
+        <button class="submit-btn" onclick="goStep4()" style="margin-top:18px">Continue →</button>
+        <button class="back-btn-step" onclick="goStep(3)">← Back</button>
+      </div>
+
+      <!-- STEP 5: OTP Verification -->
+      <div class="form-step" id="step5">
+        <div class="step-title">Verify Your Email</div>
+        <div class="step-desc">Step 5 of 5 — Enter the 6-digit code</div>
+        <div style="text-align:center;margin-bottom:8px;font-size:0.8rem;color:rgba(255,255,255,0.5)">
+          Code sent to <span id="emailDisplay" style="color:#FF6B9D;font-weight:600"></span>
+        </div>
+        <div class="otp-wrap">
+          <input class="otp-input" id="otp1" maxlength="1" type="text" inputmode="numeric" oninput="otpMove(this,'otp2')" onkeydown="otpBack(event,this,'')"/>
+          <input class="otp-input" id="otp2" maxlength="1" type="text" inputmode="numeric" oninput="otpMove(this,'otp3')" onkeydown="otpBack(event,this,'otp1')"/>
+          <input class="otp-input" id="otp3" maxlength="1" type="text" inputmode="numeric" oninput="otpMove(this,'otp4')" onkeydown="otpBack(event,this,'otp2')"/>
+          <input class="otp-input" id="otp4" maxlength="1" type="text" inputmode="numeric" oninput="otpMove(this,'otp5')" onkeydown="otpBack(event,this,'otp3')"/>
+          <input class="otp-input" id="otp5" maxlength="1" type="text" inputmode="numeric" oninput="otpMove(this,'otp6')" onkeydown="otpBack(event,this,'otp4')"/>
+          <input class="otp-input" id="otp6" maxlength="1" type="text" inputmode="numeric" oninput="otpMove(this,'')" onkeydown="otpBack(event,this,'otp5')"/>
+        </div>
+        <button class="submit-btn" id="verifyBtn" onclick="verifyOTP()">✅ Verify & Create Account</button>
+        <div class="resend-link">
+          Didn't receive it?
+          <button id="resendBtn" onclick="resendOTP()" disabled>Resend (<span id="resendTimer">30</span>s)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth Switch -->
+    <div class="auth-switch">
+      Already have an account? <a href="login.html">Login here <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Back Button Footer -->
+    <div class="back-footer">
+      <a href="index.html" class="back-btn-footer">
+        <i class="fas fa-chevron-left"></i> Back to Home
+      </a>
+    </div>
+  </div>
+
+  <script>
+    let selectedGender = '';
+    let selectedGenderPref = '';
+    let selectedInterests = [];
+    let uploadedFile = null;
+    let passwordOk = false;
+    let resendInterval = null;
+
+    const blockedDomains = [
+      'mailinator.com','guerrillamail.com','tempmail.com',
+      'throwaway.email','fakeinbox.com','sharklasers.com',
+      'yopmail.com','trashmail.com','maildrop.cc','dispostable.com'
+    ];
+
+    // Floating Hearts
+    function createFloatingHearts() {
+      const container = document.querySelector('.animated-bg');
+      for (let i = 0; i < 25; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerHTML = ['💕', '❤️', '💖', '💗'][Math.floor(Math.random() * 4)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+        heart.style.animationDuration = (Math.random() * 12 + 10) + 's';
+        heart.style.animationDelay = Math.random() * 15 + 's';
+        container.appendChild(heart);
+      }
+    }
+    createFloatingHearts();
+
+    function showError(msg) { const el = document.getElementById('errorMsg'); el.innerHTML = '⚠️ ' + msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 5000); }
+    function showSuccess(msg) { const el = document.getElementById('successMsg'); el.innerHTML = '✅ ' + msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 4000); }
+
+    function goStep(n) {
+      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.step-dot').forEach(d => d.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      document.getElementById('dot' + n).classList.add('active');
+    }
+
+    function checkPasswordStrength(val) {
+      const bar = document.getElementById('strengthBar');
+      const text = document.getElementById('strengthText');
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[^a-zA-Z0-9]/.test(val)) score++;
+      const colors = ['#ff4444','#ff9800','#4caf50','#4caf50'];
+      const labels = ['Weak','Fair','Good','Strong'];
+      const widths = ['25%','50%','75%','100%'];
+      if (val.length === 0) { bar.style.width='0'; text.textContent=''; passwordOk=false; return; }
+      const i = Math.max(0, Math.min(score - 1, 3));
+      bar.style.background = colors[i]; bar.style.width = widths[i];
+      text.textContent = labels[i]; text.style.color = colors[i];
+      passwordOk = score >= 2;
+    }
+
+    function goStep1() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const age = document.getElementById('age').value;
+      if (!name || !email || !password || !age) { showError('Please fill all fields!'); return; }
+      if (password.length < 8) { showError('Password must be at least 8 characters!'); return; }
+      if (!passwordOk) { showError('Password too weak! Add numbers or capital letters.'); return; }
+      const emailDomain = email.split('@')[1]?.toLowerCase();
+      if (!emailDomain || blockedDomains.includes(emailDomain)) { showError('Please use a real email address!'); return; }
+      if (parseInt(age) < 15 || parseInt(age) > 30) { showError('Age must be between 15 and 30!'); return; }
+      goStep(2);
+    }
+
+    function previewPhoto(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { showError('Photo too large! Max 5MB.'); return; }
+      uploadedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const preview = document.getElementById('uploadPreview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        document.getElementById('uploadIcon').style.display = 'none';
+        document.getElementById('uploadText').textContent = '✅ Photo selected!';
+        document.getElementById('uploadArea').classList.add('has-photo');
+        document.getElementById('photoNextBtn').disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function goStep3() {
+      const category = document.getElementById('category').value;
+      const location = document.getElementById('location').value;
+      if (!category || !location || !selectedGender) { showError('Please fill all fields and select gender!'); return; }
+      goStep(4);
+    }
+
+    function selectGender(btn, val) {
+      document.querySelectorAll('.gender-btn:not([id^="pref-"])').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedGender = val;
+    }
+
+    function selectGenderPref(btn, val) {
+      document.querySelectorAll('[id^="pref-"]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedGenderPref = val;
+    }
+
+    function toggleInterest(btn) {
+      btn.classList.toggle('active');
+      const text = btn.textContent.trim();
+      if (btn.classList.contains('active')) { selectedInterests.push(text); }
+      else { selectedInterests = selectedInterests.filter(i => i !== text); }
+    }
+
+    async function goStep4() {
+      if (selectedInterests.length < 3) { showError('Please select at least 3 interests!'); return; }
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      const btn = document.querySelector('#step4 .submit-btn');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending code...';
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { emailRedirectTo: null } });
+        if (error) throw error;
+
+        localStorage.setItem('ehSignupData', JSON.stringify({
+          name: document.getElementById('name').value.trim(),
+          age: parseInt(document.getElementById('age').value),
+          gender: selectedGender,
+          gender_preference: selectedGenderPref || 'both',
+          category: document.getElementById('category').value,
+          location: document.getElementById('location').value,
+          bio: document.getElementById('bio').value,
+          looking_for: document.getElementById('lookingFor').value,
+          interests: selectedInterests
+        }));
+        localStorage.setItem('ehSignupEmail', email);
+        localStorage.setItem('ehSignupPassword', password);
+
+        document.getElementById('emailDisplay').textContent = email;
+        goStep(5);
+        startResendTimer();
+        document.getElementById('otp1').focus();
+
+      } catch(err) { showError(err.message || 'Failed to send code. Try again.'); }
+      btn.disabled = false; btn.innerHTML = 'Continue →';
+    }
+
+    function otpMove(current, nextId) { current.value = current.value.replace(/[^0-9]/g,''); if (current.value.length === 1 && nextId) document.getElementById(nextId).focus(); }
+    function otpBack(e, current, prevId) { if (e.key === 'Backspace' && current.value === '' && prevId) document.getElementById(prevId).focus(); }
+    function getOTPValue() { return ['otp1','otp2','otp3','otp4','otp5','otp6'].map(id => document.getElementById(id).value).join(''); }
+
+    async function verifyOTP() {
+      const otp = getOTPValue();
+      if (otp.length !== 6) { showError('Please enter the full 6-digit code.'); return; }
+      const btn = document.getElementById('verifyBtn');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying...';
+      const email = localStorage.getItem('ehSignupEmail');
+
+      try {
+        const { data, error } = await supabaseClient.auth.verifyOtp({ email, token: otp, type: 'signup' });
+        if (error) throw error;
+
+        const userId = data.user.id;
+        let avatarUrl = null;
+        if (uploadedFile) {
+          const ext = uploadedFile.name.split('.').pop();
+          const fileName = userId + '.' + ext;
+          const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(fileName, uploadedFile, { upsert:true });
+          if (!uploadError) { const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(fileName); avatarUrl = urlData.publicUrl; }
+        }
+
+        const signupData = JSON.parse(localStorage.getItem('ehSignupData') || '{}');
+        await supabaseClient.from('profiles').upsert({ id: userId, ...signupData, avatar_url: avatarUrl });
+
+        localStorage.removeItem('ehSignupData');
+        localStorage.removeItem('ehSignupEmail');
+        localStorage.removeItem('ehSignupPassword');
+
+        document.getElementById('authBox').innerHTML = `
+          <div style="text-align:center;padding:20px 0">
+            <div style="font-size:3.5rem;margin-bottom:16px">🎉</div>
+            <div style="font-size:1.3rem;font-weight:800;background:linear-gradient(135deg, #FF1493, #FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">Welcome to EntranceHearts!</div>
+            <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin-bottom:20px">Your account is verified. Finding your matches...</div>
+            <div style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">💕</div>
+          </div>`;
+        setTimeout(() => window.location.href = 'browse.html', 2000);
+
+      } catch(err) { showError('Wrong code or code expired. Please try again.'); btn.disabled = false; btn.innerHTML = '✅ Verify & Create Account'; }
+    }
+
+    function startResendTimer() {
+      let seconds = 30;
+      const btn = document.getElementById('resendBtn');
+      const timerEl = document.getElementById('resendTimer');
+      btn.disabled = true;
+      if (resendInterval) clearInterval(resendInterval);
+      resendInterval = setInterval(() => { 
+        seconds--; 
+        timerEl.textContent = seconds; 
+        if (seconds <= 0) { 
+          clearInterval(resendInterval); 
+          btn.disabled = false; 
+          btn.innerHTML = 'Resend'; 
+        } 
+      }, 1000);
+    }
+
+    async function resendOTP() {
+      const email = localStorage.getItem('ehSignupEmail');
+      const password = localStorage.getItem('ehSignupPassword');
+      if (!email || !password) { showError('Please start signup again.'); return; }
+      const btn = document.getElementById('resendBtn');
+      btn.disabled = true;
+      try {
+        await supabaseClient.auth.signUp({ email, password, options:{ emailRedirectTo:null } });
+        showSuccess('New code sent! Check your inbox.');
+        startResendTimer();
+      } catch(err) { showError('Could not resend. Try again.'); btn.disabled = false; }
+    }
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (navbar && window.scrollY > 50) navbar.classList.add('scrolled');
+      else if (navbar) navbar.classList.remove('scrolled');
+    });
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('eh_theme', next);
+      document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    (function(){
+      const t = localStorage.getItem('eh_theme') || 'dark';
+      const icon = document.getElementById('themeIcon');
+      if (icon) icon.className = t === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    })();
+  </script>
+<div id="offline-bar" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:8000;background:rgba(185,28,28,0.97);backdrop-filter:blur(12px);color:#fff;padding:10px 16px;border-radius:14px;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">📡 No internet — some features may not work</div>
+<script>(function(){var b=document.getElementById('offline-bar');function u(){b.style.display=navigator.onLine?'none':'block';}window.addEventListener('online',u);window.addEventListener('offline',u);u();})();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
