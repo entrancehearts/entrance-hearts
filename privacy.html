@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>Privacy Policy — EntranceHearts</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --bg:#06061a;
+      --card:rgba(255,255,255,0.055);
+      --border:rgba(255,255,255,0.09);
+      --nav:rgba(6,6,26,0.97);
+      --text:rgba(255,255,255,0.93);
+      --text-muted:rgba(255,255,255,0.55);
+      --text-faint:rgba(255,255,255,0.35);
+      --pink:#FF1493;
+      --pink-light:#FF6B9D;
+    }
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    .ambient{position:fixed;pointer-events:none;z-index:0;}
+    .amb1{top:-100px;left:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,20,147,0.11),transparent 70%);}
+    .amb2{bottom:-100px;right:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(110,40,210,0.09),transparent 70%);}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:14px 20px;background:var(--nav);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+    .back-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:0.9rem;transition:all 0.2s;flex-shrink:0;}
+    .back-btn:hover{background:rgba(255,255,255,0.12);}
+    .logo{font-size:1rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--pink-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+    .nav-right{margin-left:auto;}
+    .nav-right a{font-size:0.78rem;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:50px;transition:all 0.2s;}
+    .nav-right a:hover{color:var(--pink-light);background:rgba(255,20,147,0.08);}
+
+    /* HERO */
+    .hero{padding:100px 20px 40px;text-align:center;position:relative;z-index:1;}
+    .hero-icon{font-size:2.5rem;margin-bottom:12px;}
+    .hero h1{font-size:1.8rem;font-weight:800;margin-bottom:8px;}
+    .hero p{color:var(--text-muted);font-size:0.85rem;line-height:1.6;}
+    .last-updated{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:0.75rem;color:var(--text-faint);margin-top:12px;}
+
+    /* TOC */
+    .toc{max-width:680px;margin:0 auto 32px;padding:0 16px;position:relative;z-index:1;}
+    .toc-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px 24px;}
+    .toc-title{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--pink-light);margin-bottom:14px;}
+    .toc-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .toc-list a{color:var(--text-muted);text-decoration:none;font-size:0.83rem;padding:4px 0;display:flex;align-items:center;gap:8px;transition:color 0.2s;}
+    .toc-list a:hover{color:var(--pink-light);}
+    .toc-list a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--pink);flex-shrink:0;}
+
+    /* CONTENT */
+    .content{max-width:680px;margin:0 auto;padding:0 16px 80px;position:relative;z-index:1;}
+    .section{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+    .section-icon{width:36px;height:36px;border-radius:12px;background:rgba(255,20,147,0.12);display:flex;align-items:center;justify-content:center;color:var(--pink);font-size:0.9rem;flex-shrink:0;}
+    .section h2{font-size:1rem;font-weight:700;}
+    .section p{font-size:0.84rem;line-height:1.75;color:var(--text-muted);margin-bottom:10px;}
+    .section p:last-child{margin-bottom:0;}
+    .section ul{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+    .section ul li{font-size:0.84rem;color:var(--text-muted);display:flex;align-items:flex-start;gap:10px;line-height:1.6;}
+    .section ul li::before{content:'→';color:var(--pink);flex-shrink:0;font-size:0.75rem;margin-top:2px;}
+    .section h3{font-size:0.88rem;font-weight:700;margin:16px 0 8px;color:var(--text);}
+    .highlight-box{background:rgba(255,20,147,0.06);border:1px solid rgba(255,20,147,0.15);border-radius:14px;padding:14px 16px;margin-top:12px;}
+    .highlight-box p{color:var(--text)!important;font-weight:500;}
+
+    /* CONTACT */
+    .contact-card{background:linear-gradient(135deg,rgba(255,20,147,0.12),rgba(110,40,210,0.08));border:1px solid rgba(255,20,147,0.2);border-radius:20px;padding:28px 24px;text-align:center;margin-bottom:16px;}
+    .contact-card h2{font-size:1.1rem;font-weight:800;margin-bottom:8px;}
+    .contact-card p{font-size:0.84rem;color:var(--text-muted);margin-bottom:20px;}
+    .contact-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--pink),var(--pink-light));color:#fff;text-decoration:none;padding:11px 24px;border-radius:50px;font-size:0.84rem;font-weight:700;transition:all 0.2s;}
+    .contact-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,20,147,0.35);}
+
+    /* BACK TO TOP */
+    .back-top{display:block;text-align:center;color:var(--text-faint);font-size:0.78rem;text-decoration:none;padding:16px;transition:color 0.2s;}
+    .back-top:hover{color:var(--pink-light);}
+  </style>
+</head>
+<body>
+  <div class="ambient amb1"></div>
+  <div class="ambient amb2"></div>
+
+  <nav class="navbar">
+    <a class="back-btn" href="index.html"><i class="fa-solid fa-arrow-left"></i></a>
+    <a class="logo" href="index.html">💕 EntranceHearts</a>
+    <div class="nav-right"><a href="terms.html">Terms</a></div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-icon">🔒</div>
+    <h1>Privacy Policy</h1>
+    <p>We care about your privacy. Here's exactly how we handle your data.</p>
+    <span class="last-updated"><i class="fa-regular fa-calendar"></i> Last updated: June 2025</span>
+  </div>
+
+  <div class="toc">
+    <div class="toc-card">
+      <div class="toc-title">Contents</div>
+      <ul class="toc-list">
+        <li><a href="#collect">What information we collect</a></li>
+        <li><a href="#use">How we use your information</a></li>
+        <li><a href="#store">Data storage & security</a></li>
+        <li><a href="#share">Who we share data with</a></li>
+        <li><a href="#rights">Your rights & choices</a></li>
+        <li><a href="#cookies">Cookies & local storage</a></li>
+        <li><a href="#minors">Age restrictions</a></li>
+        <li><a href="#changes">Changes to this policy</a></li>
+        <li><a href="#contact-sec">Contact us</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="section" id="collect">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-database"></i></div>
+        <h2>What Information We Collect</h2>
+      </div>
+      <h3>Information you provide directly</h3>
+      <ul>
+        <li>Name, email address and password when you create an account</li>
+        <li>Profile information: age, gender, exam category (CEE / IOE / +2 / Management), district, bio</li>
+        <li>Profile photos you upload</li>
+        <li>Messages you send to other users</li>
+        <li>Confessions you post (stored anonymously — not linked to your profile publicly)</li>
+        <li>Study materials you upload to the library</li>
+        <li>Study timer session data</li>
+      </ul>
+      <h3>Information collected automatically</h3>
+      <ul>
+        <li>Device type and browser information (for bug fixing)</li>
+        <li>Pages visited and features used within the app</li>
+        <li>Last active timestamp (shown as "Recently active" to matches)</li>
+        <li>Like / pass actions on profiles</li>
+      </ul>
+    </div>
+
+    <div class="section" id="use">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-gear"></i></div>
+        <h2>How We Use Your Information</h2>
+      </div>
+      <p>We use your information only to operate and improve EntranceHearts:</p>
+      <ul>
+        <li>Show your profile to compatible users in your exam category</li>
+        <li>Enable messaging between users who have mutually liked each other</li>
+        <li>Send push notifications for new matches and messages (only if you opt in)</li>
+        <li>Run the AI Match feature to suggest compatible profiles</li>
+        <li>Maintain the Confession Wall and Study Library</li>
+        <li>Track study timer sessions for your personal statistics</li>
+        <li>Moderate content and enforce community guidelines</li>
+      </ul>
+      <div class="highlight-box">
+        <p>🚫 We do NOT sell your personal data to advertisers or third parties. We have no advertising on this app.</p>
+      </div>
+    </div>
+
+    <div class="section" id="store">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h2>Data Storage & Security</h2>
+      </div>
+      <p>Your data is stored securely using <strong>Supabase</strong>, which is built on PostgreSQL and hosted on AWS infrastructure. Supabase is SOC 2 Type II certified.</p>
+      <ul>
+        <li>Passwords are never stored in plain text — they are hashed using bcrypt</li>
+        <li>All data is transmitted over HTTPS (TLS 1.3)</li>
+        <li>Profile photos are stored in Supabase Storage with access controls</li>
+        <li>Row-level security (RLS) policies ensure users can only access their own data</li>
+        <li>Messages are stored in our database and are only accessible to the sender and recipient</li>
+      </ul>
+      <p>While we implement strong security measures, no system is 100% secure. Please use a strong, unique password for your account.</p>
+    </div>
+
+    <div class="section" id="share">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-share-nodes"></i></div>
+        <h2>Who We Share Data With</h2>
+      </div>
+      <p>We share data only with essential service providers needed to run the app:</p>
+      <ul>
+        <li><strong>Supabase</strong> — Database, authentication, and file storage provider</li>
+        <li><strong>Google Fonts / Cloudflare CDN</strong> — Font and icon delivery</li>
+        <li><strong>Browser APIs</strong> — Push notifications (via your device's notification system)</li>
+      </ul>
+      <p>We may disclose information if required by Nepali law or to protect the safety of our users.</p>
+      <div class="highlight-box">
+        <p>Your profile is visible to other registered users. Your confession posts are anonymous — your name is never attached to them.</p>
+      </div>
+    </div>
+
+    <div class="section" id="rights">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-user-check"></i></div>
+        <h2>Your Rights & Choices</h2>
+      </div>
+      <p>You have full control over your data:</p>
+      <ul>
+        <li><strong>View your data</strong> — All your profile information is visible on your Profile page</li>
+        <li><strong>Update your data</strong> — Edit your profile anytime from the Profile page</li>
+        <li><strong>Delete your account</strong> — Contact us to permanently delete your account and all associated data</li>
+        <li><strong>Opt out of push notifications</strong> — Disable notifications in your device settings or browser permissions at any time</li>
+        <li><strong>Block users</strong> — Block any user from their profile to prevent all further contact</li>
+        <li><strong>Report content</strong> — Report inappropriate profiles or confessions using the report button</li>
+      </ul>
+    </div>
+
+    <div class="section" id="cookies">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-cookie-bite"></i></div>
+        <h2>Cookies & Local Storage</h2>
+      </div>
+      <p>We use browser local storage (not tracking cookies) to:</p>
+      <ul>
+        <li>Keep you logged in between sessions (authentication token)</li>
+        <li>Remember your theme preference (dark / light mode)</li>
+        <li>Cache confession likes so they persist between visits</li>
+        <li>Remember if you dismissed the app install prompt</li>
+      </ul>
+      <p>We do not use third-party tracking cookies, advertising cookies, or analytics cookies.</p>
+    </div>
+
+    <div class="section" id="minors">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-user-shield"></i></div>
+        <h2>Age Restrictions</h2>
+      </div>
+      <p>EntranceHearts is intended for users who are <strong>16 years or older</strong>, as it is designed for students preparing for entrance exams in Nepal.</p>
+      <p>If we become aware that a user under the age of 16 has provided personal information without appropriate consent, we will take steps to delete that information.</p>
+      <p>Parents or guardians who believe their child has created an account should contact us immediately.</p>
+    </div>
+
+    <div class="section" id="changes">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-file-pen"></i></div>
+        <h2>Changes to This Policy</h2>
+      </div>
+      <p>We may update this Privacy Policy from time to time. When we make significant changes, we will notify you through the app or by email. The "Last updated" date at the top of this page will always reflect the most recent version.</p>
+      <p>Continued use of EntranceHearts after changes are posted constitutes your acceptance of the updated policy.</p>
+    </div>
+
+    <div class="contact-card" id="contact-sec">
+      <h2>Questions about your privacy?</h2>
+      <p>We're a small team and we take every privacy concern seriously. Reach out and we'll respond within 48 hours.</p>
+      <a href="mailto:privacy@entrancehearts.com" class="contact-btn">
+        <i class="fa-solid fa-envelope"></i> privacy@entrancehearts.com
+      </a>
+    </div>
+
+    <a href="#" class="back-top"><i class="fa-solid fa-arrow-up"></i> Back to top</a>
+
+  </div>
+
+  <script>
+    if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  </script>
+</body>
+</html>
