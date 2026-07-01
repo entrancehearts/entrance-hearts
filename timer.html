@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Study Timer ⏱️ - EntranceHearts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://dzfrwjuugeqzsxrykgjc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZnJ3anV1Z2VxenN4cnlrZ2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzc3MzQsImV4cCI6MjA5MzcxMzczNH0.ahwhlTxsd9v69hVskZv6j34jZDRktEcv6by4kwLkuNQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #06061a;
+      color: rgba(255,255,255,0.93);
+      min-height: 100vh;
+    }
+
+    /* Navbar - Clean Header (No Back Button) */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 14px 24px;
+      background: rgba(6,6,26,0.97);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.09);
+      transition: all 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar.scrolled { padding: 10px 24px; background: rgba(6,6,26,0.99); }
+    .nav-container { max-width: 1280px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .desktop-nav { display: flex; gap: 6px; align-items: center; }
+    .btn-ghost-nav {
+      color: rgba(255, 255, 255, 0.65);
+      padding: 8px 14px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .btn-ghost-nav:hover { color: #FF6B9D; background: rgba(255,20,147,0.08); }
+    .btn-primary-nav {
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .btn-primary-nav:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,20,147,0.3); }
+    .mobile-menu-btn {
+      display: none;
+      background: rgba(255,20,147,0.1);
+      border: 1px solid rgba(255,20,147,0.25);
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #FF6B9D;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    @media (max-width: 768px) { .mobile-menu-btn { display: block; } .desktop-nav { display: none; } }
+    .mobile-menu {
+      position: fixed;
+      top: 62px;
+      right: -100%;
+      width: 260px;
+      background: rgba(10,8,32,0.98);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 16px;
+      z-index: 999;
+      transition: right 0.3s ease;
+    }
+    .mobile-menu.open { right: 16px; }
+    .mobile-menu-item {
+      display: block;
+      padding: 10px 14px;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .mobile-menu-item:hover { background: rgba(255,20,147,0.1); color: #FF6B9D; }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(255,20,147,0.05), rgba(255,107,157,0.02));
+      border-bottom: 1px solid rgba(255,20,147,0.1);
+      padding: 90px 24px 50px;
+      text-align: center;
+    }
+    .hero-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      animation: gentleFloat 3s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .hero-banner h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .hero-banner p {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.85rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .number {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-stat .label { font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); }
+
+    /* Main Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 20px 100px;
+    }
+
+    /* Timer Card */
+    .timer-card {
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid rgba(255, 20, 147, 0.15);
+      border-radius: 28px;
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .timer-card:hover { border-color: rgba(255,20,147,0.3); transform: translateY(-2px); }
+    .timer-display {
+      font-size: 3.5rem;
+      font-weight: 800;
+      font-family: monospace;
+      letter-spacing: 6px;
+      margin: 20px 0;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .timer-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .timer-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 20, 147, 0.25);
+      padding: 10px 24px;
+      border-radius: 100px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+    .timer-btn:hover { background: #FF1493; transform: scale(1.02); border-color: #FF1493; }
+    .session-info {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 10px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid rgba(255, 20, 147, 0.12);
+      border-radius: 20px;
+      padding: 16px 10px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .stat-card:hover { border-color: rgba(255,20,147,0.3); transform: translateY(-2px); }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.65rem; color: rgba(255, 255, 255, 0.45); margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+    /* Goal Section */
+    .goal-section {
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid rgba(255, 20, 147, 0.12);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+    .progress-bar {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      width: 0%;
+      height: 100%;
+      transition: width 0.5s ease;
+    }
+    .goal-input {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .goal-input input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 30px;
+      padding: 10px 16px;
+      color: white;
+    }
+    .goal-input input:focus { outline: none; border-color: #FF1493; }
+    .goal-input button {
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      border: none;
+      padding: 10px 22px;
+      border-radius: 30px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .goal-input button:hover { transform: translateY(-1px); }
+
+    /* Chart Section */
+    .chart-section {
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid rgba(255, 20, 147, 0.12);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .chart-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #FF6B9D;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    canvas { max-height: 180px; width: 100%; }
+
+    /* Pomodoro & Leaderboard Row */
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .info-card {
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid rgba(255, 20, 147, 0.12);
+      border-radius: 22px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .info-card:hover { border-color: rgba(255,20,147,0.3); transform: translateY(-2px); }
+    .info-card i { font-size: 1.8rem; color: #FF6B9D; margin-bottom: 8px; display: block; }
+    .info-card h3 { font-size: 0.85rem; margin-bottom: 6px; }
+    .info-card .value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .leaderboard-list { text-align: left; margin-top: 12px; }
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.75rem;
+    }
+    .rank { width: 30px; font-weight: 700; }
+    .rank-1 { color: #FFD700; }
+    .rank-2 { color: #C0C0C0; }
+    .rank-3 { color: #CD7F32; }
+    .user-name { flex: 1; }
+    .user-hours { color: #FF6B9D; font-weight: 600; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: rgba(10,8,32,0.99);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      padding: 28px;
+      text-align: center;
+      max-width: 350px;
+      width: 90%;
+    }
+    .modal-content .timer-btn { margin: 5px; }
+
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(14,12,38,0.98);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      z-index: 200;
+      display: none;
+    }
+    .toast.show { display: block; animation: fadeUp 0.25s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(6,6,26,0.97);
+      backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255,255,255,0.09);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 18px;
+      z-index: 100;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: rgba(255, 255, 255, 0.45);
+      text-decoration: none;
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 30px;
+      transition: all 0.2s;
+    }
+    .nav-item span:first-child { font-size: 1.2rem; }
+    .nav-item:hover { color: #FF6B9D; background: rgba(255,20,147,0.08); }
+    .nav-item.active { color: #FF6B9D; }
+
+    /* Back Button Footer */
+    .back-footer {
+      text-align: center;
+      margin-top: 24px;
+    }
+    .back-btn-footer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 40px;
+      padding: 8px 22px;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .back-btn-footer:hover {
+      background: rgba(255, 20, 147, 0.08);
+      border-color: #FF6B9D;
+      color: #FF6B9D;
+      transform: translateX(-3px);
+    }
+
+    @media (max-width: 650px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .two-columns { grid-template-columns: 1fr; }
+      .timer-display { font-size: 2.5rem; letter-spacing: 4px; }
+      .timer-btn { padding: 8px 18px; font-size: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-banner h1 { font-size: 1.4rem; }
+      .timer-display { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar - Clean Header (No Back Button) -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">⏱️ Study Timer</a>
+      <div class="desktop-nav">
+        <a href="browse.html" class="btn-ghost-nav">🔥 Discover</a>
+        <a href="chat.html" class="btn-ghost-nav">💬 Chats</a>
+        <a href="confessions.html" class="btn-ghost-nav">💌 Confessions</a>
+        <a href="study.html" class="btn-ghost-nav">📚 Study</a>
+        <a href="timer.html" class="btn-ghost-nav" style="color: #FF6B9D;">⏱️ Timer</a>
+        <a href="ai-match.html" class="btn-ghost-nav">🤖 AI Match</a>
+        <a href="admin.html" class="btn-admin-nav" id="adminBtn" style="display: none;">
+  <i class="fas fa-crown"></i> Admin Panel
+        </a>
+        <a href="profile.html" class="btn-primary-nav">👤 Profile</a>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="browse.html" class="mobile-menu-item">🔥 Discover</a>
+    <a href="chat.html" class="mobile-menu-item">💬 Chats</a>
+    <a href="confessions.html" class="mobile-menu-item">💌 Confessions</a>
+    <a href="study.html" class="mobile-menu-item">📚 Study</a>
+    <a href="timer.html" class="mobile-menu-item">⏱️ Timer</a>
+    <a href="ai-match.html" class="mobile-menu-item">🤖 AI Match</a>
+    <a href="admin.html" class="mobile-menu-item" id="mobileAdminBtn" style="display: none;">👑 Admin Panel</a>
+    <a href="profile.html" class="mobile-menu-item">👤 Profile</a>
+    <a href="login.html" class="mobile-menu-item">🚪 Logout</a>
+  </div>
+
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-icon">⏱️📚</div>
+    <h1>Study Timer</h1>
+    <p>Track your study hours, complete Pomodoros, and stay focused</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="number" id="totalHoursHero">0</div><div class="label">Total Hours</div></div>
+      <div class="hero-stat"><div class="number" id="streakHero">0</div><div class="label">Day Streak</div></div>
+      <div class="hero-stat"><div class="number" id="pomodoroHero">0</div><div class="label">Pomodoros</div></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Timer Card -->
+    <div class="timer-card">
+      <div class="timer-display" id="timerDisplay">00:00:00</div>
+      <div class="timer-controls">
+        <button class="timer-btn" id="startBtn"><i class="fas fa-play"></i> Start</button>
+        <button class="timer-btn" id="pauseBtn"><i class="fas fa-pause"></i> Pause</button>
+        <button class="timer-btn" id="resetBtn"><i class="fas fa-redo-alt"></i> Reset</button>
+      </div>
+      <div class="session-info"><i class="fas fa-hourglass-half"></i> Current Session: <span id="currentSession">0</span> minutes</div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-value" id="todayHours">0</div><div class="stat-label"><i class="fas fa-sun"></i> Today's Study</div></div>
+      <div class="stat-card"><div class="stat-value" id="weekHours">0</div><div class="stat-label"><i class="fas fa-calendar-week"></i> This Week</div></div>
+      <div class="stat-card"><div class="stat-value" id="totalHours">0</div><div class="stat-label"><i class="fas fa-chart-line"></i> Total Hours</div></div>
+      <div class="stat-card"><div class="stat-value" id="streakDays">0</div><div class="stat-label"><i class="fas fa-fire"></i> Day Streak</div></div>
+    </div>
+
+    <!-- Weekly Chart -->
+    <div class="chart-section">
+      <div class="chart-title"><i class="fas fa-chart-bar"></i> Weekly Study Activity</div>
+      <canvas id="weeklyChart"></canvas>
+    </div>
+
+    <!-- Goal Section -->
+    <div class="goal-section">
+      <div class="goal-header">
+        <span><i class="fas fa-bullseye"></i> Daily Goal</span>
+        <span id="goalStatus">0 / 0 hours</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="goalProgress"></div></div>
+      <div class="goal-input">
+        <input type="number" id="goalInput" placeholder="Set daily goal (hours)" min="1" max="12">
+        <button onclick="setDailyGoal()">Set Goal</button>
+      </div>
+    </div>
+
+    <!-- Pomodoro & Leaderboard -->
+    <div class="two-columns">
+      <div class="info-card" onclick="openPomodoroModal()">
+        <i class="fas fa-tomato"></i>
+        <h3>Pomodoro Timer</h3>
+        <div class="value" id="pomodoroCount">0</div>
+        <div class="stat-label">Completed Sessions</div>
+      </div>
+      <div class="info-card">
+        <i class="fas fa-trophy"></i>
+        <h3>Weekly Leaderboard</h3>
+        <div id="leaderboardList" class="leaderboard-list">
+          <div style="text-align:center;padding:15px;font-size:0.75rem;">Study to see yourself here!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Button Footer -->
+    <div class="back-footer">
+      <a href="browse.html" class="back-btn-footer">
+        <i class="fas fa-chevron-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- Pomodoro Modal -->
+  <div id="pomodoroModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="font-size: 2.5rem; margin-bottom: 12px;">🍅</div>
+      <h3 style="margin-bottom: 6px;">Pomodoro Timer</h3>
+      <p style="color: rgba(255,255,255,0.5); margin-bottom: 18px; font-size: 0.75rem;">25 min focus • 5 min break</p>
+      <div id="pomodoroDisplay" style="font-size: 2.2rem; font-weight: 800; font-family: monospace; margin-bottom: 18px;">25:00</div>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button class="timer-btn" id="pomodoroStartBtn"><i class="fas fa-play"></i> Start</button>
+        <button class="timer-btn" id="pomodoroPauseBtn"><i class="fas fa-pause"></i> Pause</button>
+        <button class="timer-btn" id="pomodoroResetBtn"><i class="fas fa-redo-alt"></i> Reset</button>
+         </div>
+      <button id="closePomodoroBtn" style="margin-top: 18px; width: 100%; padding: 10px; background: transparent; border: 1px solid rgba(255,20,147,0.3); border-radius: 50px; color: rgba(255,255,255,0.7); cursor: pointer;">Close</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <a href="browse.html" class="nav-item"><span>🔥</span><span>Discover</span></a>
+    <a href="chat.html" class="nav-item"><span>💬</span><span>Chats</span><span class="chat-unread-badge"></span></a>
+    <a href="who-liked-me.html" class="nav-item"><span>❤️</span><span>Likes</span><span class="likes-new-badge" style="position:absolute;top:0;right:4px;background:linear-gradient(135deg,#FF1493,#c0105e);color:#fff;font-size:0.5rem;font-weight:800;padding:1px 4px;border-radius:20px;min-width:14px;text-align:center;line-height:1.6;border:2px solid #06061a;pointer-events:none;display:none;"></span></a>
+    <a href="profile.html" class="nav-item"><span>👤</span><span>Profile</span></a>
+  </div>
+
+  <script>
+    let currentUserId = null;
+
+    async function checkSession() {
+      const { data } = await supabaseClient.auth.getSession();
+      if (!data.session) { window.location.href = 'login.html'; return; }
+      currentUserId = data.session.user.id;
+
+
+      // Check if user is admin
+const { data: profile } = await supabaseClient
+  .from('profiles')
+  .select('role')
+  .eq('id', currentUserId)
+  .single();
+
+if (profile?.role === 'admin') {
+  const adminBtn = document.getElementById('adminBtn');
+  const mobileAdminBtn = document.getElementById('mobileAdminBtn');
+  if (adminBtn) adminBtn.style.display = 'inline-flex';
+  if (mobileAdminBtn) mobileAdminBtn.style.display = 'block';
+}
+      
+      loadData();
+    }
+
+    // ========== STUDY TIMER ==========
+    let timerInterval = null;
+    let seconds = 0;
+    let isRunning = false;
+
+    let studyData = { dailyGoal: 4, todaySeconds: 0, history: {} };
+    let weeklyChart = null;
+
+    function loadData() {
+      const saved = localStorage.getItem('entrancehearts_study_data');
+      if (saved) {
+        studyData = JSON.parse(saved);
+      } else {
+        studyData.history = {};
+        saveData();
+      }
+      updateDisplay();
+      updateChart();
+    }
+
+    function saveData() {
+      localStorage.setItem('entrancehearts_study_data', JSON.stringify(studyData));
+      updateHeroStats();
+    }
+
+    function getTodayString() { return new Date().toISOString().split('T')[0]; }
+
+    function addTodaySeconds(addedSeconds) {
+      const today = getTodayString();
+      if (!studyData.history[today]) studyData.history[today] = 0;
+      studyData.history[today] += addedSeconds;
+      studyData.todaySeconds = studyData.history[today];
+      saveData();
+      updateDisplay();
+      updateChart();
+    }
+
+    function startTimer() {
+      if (isRunning) return;
+      isRunning = true;
+      timerInterval = setInterval(() => { seconds++; updateTimerDisplay(); }, 1000);
+    }
+
+    function pauseTimer() {
+      if (!isRunning) return;
+      isRunning = false;
+      clearInterval(timerInterval);
+      if (seconds > 0) {
+        const minutesAdded = Math.floor(seconds / 60);
+        addTodaySeconds(seconds);
+        showToast(`📚 +${minutesAdded} minute${minutesAdded !== 1 ? 's' : ''} added!`);
+        seconds = 0;
+        updateTimerDisplay();
+      }
+    }
+
+    function resetTimer() {
+      if (isRunning) pauseTimer();
+      else { seconds = 0; updateTimerDisplay(); showToast('Timer reset'); }
+    }
+
+    function updateTimerDisplay() {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+      document.getElementById('timerDisplay').innerText = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+      document.getElementById('currentSession').innerText = Math.floor(seconds / 60);
+    }
+
+    function updateDisplay() {
+      const today = getTodayString();
+      const todaySecs = studyData.history[today] || 0;
+      const todayHours = (todaySecs / 3600).toFixed(1);
+      
+      let weekSecs = 0, totalSecs = 0, streak = 0;
+      for (let i = 0; i < 30; i++) {
+        const date = new Date(); date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        const secs = studyData.history[dateStr] || 0;
+        totalSecs += secs;
+        if (i < 7) weekSecs += secs;
+        if (i === 0 && secs > 0) streak = 1;
+        else if (i > 0 && secs > 0 && streak === i) streak++;
+        else if (secs === 0 && i > 0) break;
+      }
+      
+      document.getElementById('todayHours').innerText = todayHours;
+      document.getElementById('weekHours').innerText = (weekSecs / 3600).toFixed(1);
+      document.getElementById('totalHours').innerText = (totalSecs / 3600).toFixed(1);
+      document.getElementById('streakDays').innerText = streak;
+      
+      const goalHours = studyData.dailyGoal;
+      const goalProgress = Math.min(100, (todaySecs / (goalHours * 3600)) * 100);
+      document.getElementById('goalProgress').style.width = `${goalProgress}%`;
+      document.getElementById('goalStatus').innerText = `${todayHours} / ${goalHours} hours`;
+      
+      updateLeaderboard();
+      updateHeroStats();
+    }
+
+    function updateHeroStats() {
+      let totalSecs = 0;
+      for (let i = 0; i < 30; i++) {
+        const date = new Date(); date.setDate(date.getDate() - i);
+        const secs = studyData.history[date.toISOString().split('T')[0]] || 0;
+        totalSecs += secs;
+      }
+      document.getElementById('totalHoursHero').innerText = (totalSecs / 3600).toFixed(0);
+      document.getElementById('streakHero').innerText = document.getElementById('streakDays').innerText;
+    }
+
+    function updateChart() {
+      const ctx = document.getElementById('weeklyChart').getContext('2d');
+      const last7Days = [];
+      const hoursData = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(); date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+        last7Days.push(dayName);
+        hoursData.push(((studyData.history[dateStr] || 0) / 3600).toFixed(1));
+      }
+      
+      if (weeklyChart) weeklyChart.destroy();
+      weeklyChart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: last7Days, datasets: [{ label: 'Study Hours', data: hoursData, backgroundColor: '#FF1493', borderRadius: 6 }] },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#fff' } } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } } }
+      });
+    }
+
+    function setDailyGoal() {
+      const input = document.getElementById('goalInput');
+      const hours = parseInt(input.value);
+      if (hours >= 1 && hours <= 12) {
+        studyData.dailyGoal = hours;
+        saveData();
+        updateDisplay();
+        showToast(`🎯 Daily goal set to ${hours} hours!`);
+        input.value = '';
+      } else { showToast('Please enter 1-12 hours'); }
+    }
+
+    function updateLeaderboard() {
+      let allUsers = [{ name: "You", hours: parseFloat(getWeekHours()), isCurrent: true }];
+      const sampleUsers = [{ name: "📚 Ram (CEE)", hours: 28 }, { name: "⚙️ Shreya (IOE)", hours: 24 }, { name: "📖 Aayush (+2)", hours: 19 }, { name: "💼 Priya (MGMT)", hours: 15 }, { name: "🏥 Sita (CEE)", hours: 12 }];
+      allUsers = [...allUsers, ...sampleUsers];
+      allUsers.sort((a, b) => b.hours - a.hours);
+      
+      document.getElementById('leaderboardList').innerHTML = allUsers.slice(0, 10).map((user, index) => `
+        <div class="leaderboard-item">
+          <div class="rank ${index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : ''}">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index+1}`}</div>
+          <div class="user-name">${user.name} ${user.isCurrent ? '(You)' : ''}</div>
+          <div class="user-hours">${user.hours} hrs</div>
+        </div>
+      `).join('');
+    }
+
+    function getWeekHours() {
+      let weekSecs = 0;
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(); date.setDate(date.getDate() - i);
+        weekSecs += studyData.history[date.toISOString().split('T')[0]] || 0;
+      }
+      return (weekSecs / 3600).toFixed(1);
+    }
+
+    // ========== POMODORO TIMER ==========
+    let pomodoroInterval = null, pomodoroSeconds = 25 * 60, isPomodoroRunning = false, pomodoroCount = parseInt(localStorage.getItem('ehPomodoroCount') || '0');
+    document.getElementById('pomodoroCount').innerText = pomodoroCount;
+    document.getElementById('pomodoroHero').innerText = pomodoroCount;
+
+    function openPomodoroModal() { document.getElementById('pomodoroModal').classList.add('active'); updatePomodoroDisplay(); }
+    function closePomodoroModal() { document.getElementById('pomodoroModal').classList.remove('active'); if (pomodoroInterval) { clearInterval(pomodoroInterval); isPomodoroRunning = false; } }
+    function updatePomodoroDisplay() { const mins = Math.floor(pomodoroSeconds / 60), secs = pomodoroSeconds % 60; document.getElementById('pomodoroDisplay').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; }
+    function startPomodoro() {
+      if (isPomodoroRunning) return;
+      isPomodoroRunning = true;
+      pomodoroInterval = setInterval(() => {
+        if (pomodoroSeconds <= 0) {
+          pomodoroCount++; localStorage.setItem('ehPomodoroCount', pomodoroCount);
+          document.getElementById('pomodoroCount').innerText = pomodoroCount;
+          document.getElementById('pomodoroHero').innerText = pomodoroCount;
+          showConfetti(); showToast('🍅 Pomodoro completed! Time for a break!');
+          resetPomodoro();
+        } else { pomodoroSeconds--; updatePomodoroDisplay(); }
+      }, 1000);
+    }
+    function pausePomodoro() { if (!isPomodoroRunning) return; isPomodoroRunning = false; clearInterval(pomodoroInterval); }
+    function resetPomodoro() { pausePomodoro(); pomodoroSeconds = 25 * 60; updatePomodoroDisplay(); }
+    function showConfetti() { for (let i = 0; i < 30; i++) { const confetti = document.createElement('div'); confetti.style.cssText = `position:fixed; left:${Math.random()*100}%; top:-10px; width:${Math.random()*8+4}px; height:${Math.random()*8+4}px; background:${['#FF1493','#FF6B9D','#FFD700'][Math.floor(Math.random()*3)]}; border-radius:2px; z-index:9999; animation:confettiFall ${Math.random()*2+2}s linear forwards;`; document.body.appendChild(confetti); setTimeout(() => confetti.remove(), 3000); } }
+    if (!document.querySelector('#confetti-style')) { const style = document.createElement('style'); style.id = 'confetti-style'; style.textContent = '@keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }'; document.head.appendChild(style); }
+
+    function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
+
+    // Event Listeners
+    document.getElementById('startBtn').addEventListener('click', startTimer);
+    document.getElementById('pauseBtn').addEventListener('click', pauseTimer);
+    document.getElementById('resetBtn').addEventListener('click', resetTimer);
+    document.getElementById('pomodoroStartBtn').addEventListener('click', startPomodoro);
+    document.getElementById('pomodoroPauseBtn').addEventListener('click', pausePomodoro);
+    document.getElementById('pomodoroResetBtn').addEventListener('click', resetPomodoro);
+    document.getElementById('closePomodoroBtn').addEventListener('click', closePomodoroModal);
+
+    window.addEventListener('beforeunload', () => { if (isRunning) pauseTimer(); });
+    window.addEventListener('scroll', () => { const navbar = document.getElementById('navbar'); if (navbar && window.scrollY > 50) navbar.classList.add('scrolled'); else if (navbar) navbar.classList.remove('scrolled'); });
+
+    // Mobile Menu
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (menuBtn && mobileMenu) {
+      menuBtn.onclick = () => { mobileMenu.classList.toggle('open'); menuBtn.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰'; };
+      document.addEventListener('click', (e) => { if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) { mobileMenu.classList.remove('open'); menuBtn.textContent = '☰'; } });
+    }
+
+    checkSession();
+    setInterval(() => { if (!isRunning) updateDisplay(); }, 60000);
+  </script>
+<div id="offline-bar" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:8000;background:rgba(185,28,28,0.97);backdrop-filter:blur(12px);color:#fff;padding:10px 16px;border-radius:14px;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">📡 No internet — some features may not work</div>
+<script>(function(){var b=document.getElementById('offline-bar');function u(){b.style.display=navigator.onLine?'none':'block';}window.addEventListener('online',u);window.addEventListener('offline',u);u();})();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
