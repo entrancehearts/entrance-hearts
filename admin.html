@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Admin Panel — EntranceHearts 👑</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://dzfrwjuugeqzsxrykgjc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZnJ3anV1Z2VxenN4cnlrZ2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzc3MzQsImV4cCI6MjA5MzcxMzczNH0.ahwhlTxsd9v69hVskZv6j34jZDRktEcv6by4kwLkuNQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --bg:#06061a;
+      --surface:rgba(255,255,255,0.05);
+      --surface2:rgba(255,255,255,0.08);
+      --border:rgba(255,255,255,0.09);
+      --border-hover:rgba(255,20,147,0.35);
+      --pink:#FF1493;
+      --pink-light:#FF6B9D;
+      --pink-pale:rgba(255,20,147,0.08);
+      --text:rgba(255,255,255,0.88);
+      --text-muted:rgba(255,255,255,0.45);
+      --text-dim:rgba(255,255,255,0.25);
+      --red:rgba(239,68,68,0.15);
+      --red-text:#f87171;
+      --green:rgba(34,197,94,0.15);
+      --green-text:#4ade80;
+    }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+    /* Aurora glow background */
+    body::before{content:'';position:fixed;top:-220px;left:-200px;width:75vw;height:75vw;max-width:780px;max-height:780px;border-radius:50%;background:radial-gradient(circle,rgba(255,20,147,0.15) 0%,transparent 65%);pointer-events:none;z-index:0;animation:adminA1 28s ease-in-out infinite;}
+    body::after{content:'';position:fixed;bottom:-180px;right:-180px;width:60vw;height:60vw;max-width:650px;max-height:650px;border-radius:50%;background:radial-gradient(circle,rgba(110,40,210,0.11) 0%,transparent 65%);pointer-events:none;z-index:0;animation:adminA2 34s ease-in-out infinite;}
+    @keyframes adminA1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,45px) scale(1.05)}}
+    @keyframes adminA2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-45px,-55px) scale(1.07)}}
+
+    /* ── NAVBAR ── */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:300;padding:0 20px;height:60px;background:rgba(6,6,26,0.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-size:1rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--pink-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;display:flex;align-items:center;gap:8px;}
+    .logo-crown{font-size:1.2rem;-webkit-text-fill-color:initial;}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .hamburger{background:var(--pink-pale);border:1px solid var(--border);padding:8px 12px;border-radius:10px;color:var(--pink-light);cursor:pointer;font-size:1rem;transition:all 0.2s;}
+    .hamburger:hover{background:rgba(255,20,147,0.15);}
+    .exit-btn{background:rgba(255,255,255,0.05);border:1px solid var(--border);padding:7px 16px;border-radius:50px;color:var(--text-muted);text-decoration:none;font-size:0.75rem;font-weight:500;transition:all 0.2s;}
+    .exit-btn:hover{color:var(--pink-light);border-color:var(--border-hover);}
+
+    /* ── SIDEBAR ── */
+    .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:none;backdrop-filter:blur(4px);}
+    .sidebar-overlay.open{display:block;}
+    .sidebar{position:fixed;top:60px;left:-280px;width:260px;height:calc(100% - 60px);background:rgba(15,15,24,0.98);backdrop-filter:blur(24px);border-right:1px solid var(--border);z-index:250;transition:left 0.3s cubic-bezier(0.32,0.72,0,1);overflow-y:auto;display:flex;flex-direction:column;}
+    .sidebar.open{left:0;}
+    .sidebar-section{padding:16px 12px 8px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);}
+    .sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 16px;color:var(--text-muted);font-size:0.84rem;font-weight:500;cursor:pointer;border-radius:12px;margin:1px 8px;transition:all 0.2s;border-left:2px solid transparent;}
+    .sidebar-item i{width:18px;text-align:center;font-size:0.88rem;}
+    .sidebar-item .badge{margin-left:auto;background:linear-gradient(135deg,var(--pink),var(--pink-light));color:white;font-size:0.55rem;font-weight:700;padding:2px 7px;border-radius:20px;min-width:18px;text-align:center;}
+    .sidebar-item:hover{background:var(--pink-pale);color:var(--pink-light);}
+    .sidebar-item.active{background:rgba(255,20,147,0.12);color:var(--pink-light);font-weight:600;border-left-color:var(--pink);}
+    .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--border);}
+    .sidebar-admin-info{display:flex;align-items:center;gap:10px;}
+    .sidebar-admin-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink-light));display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;overflow:hidden;}
+    .sidebar-admin-av img{width:100%;height:100%;object-fit:cover;}
+    .sidebar-admin-name{font-size:0.82rem;font-weight:600;}
+    .sidebar-admin-role{font-size:0.62rem;color:var(--pink-light);}
+
+    /* ── MAIN CONTENT ── */
+    .main{margin-top:60px;min-height:calc(100vh - 60px);padding:24px 16px 60px;position:relative;z-index:1;}
+
+    /* ── PAGE SYSTEM ── */
+    .page{display:none;animation:fadeIn 0.25s ease;}
+    .page.active{display:block;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── PAGE HEADER ── */
+    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+    .page-title{display:flex;align-items:center;gap:10px;}
+    .page-title h1{font-size:1.25rem;font-weight:700;}
+    .page-title .page-icon{width:38px;height:38px;border-radius:12px;background:var(--pink-pale);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--pink-light);}
+    .page-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+    .btn-action{background:var(--pink-pale);border:1px solid var(--border);padding:8px 16px;border-radius:50px;color:var(--pink-light);cursor:pointer;font-size:0.75rem;font-weight:600;font-family:'Inter',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+    .btn-action:hover{background:rgba(255,20,147,0.18);border-color:var(--border-hover);}
+
+    /* ── SEARCH BAR ── */
+    .search-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:50px;padding:8px 16px;margin-bottom:16px;}
+    .search-bar i{color:var(--text-dim);font-size:0.85rem;}
+    .search-bar input{background:none;border:none;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;outline:none;width:100%;}
+    .search-bar input::placeholder{color:var(--text-dim);}
+
+    /* ── STATS DASHBOARD ── */
+    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px 16px;position:relative;overflow:hidden;transition:all 0.25s;}
+    .stat-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:0.08;}
+    .stat-card.pink::before{background:var(--pink);}
+    .stat-card.blue::before{background:#60a5fa;}
+    .stat-card.green::before{background:#4ade80;}
+    .stat-card.purple::before{background:#a78bfa;}
+    .stat-card.orange::before{background:#fb923c;}
+    .stat-card.teal::before{background:#2dd4bf;}
+    .stat-card:hover{border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,20,147,0.08);}
+    .stat-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:12px;}
+    .stat-icon.pink{background:rgba(255,20,147,0.12);color:var(--pink);}
+    .stat-icon.blue{background:rgba(96,165,250,0.12);color:#60a5fa;}
+    .stat-icon.green{background:rgba(74,222,128,0.12);color:#4ade80;}
+    .stat-icon.purple{background:rgba(167,139,250,0.12);color:#a78bfa;}
+    .stat-icon.orange{background:rgba(251,146,60,0.12);color:#fb923c;}
+    .stat-icon.teal{background:rgba(45,212,191,0.12);color:#2dd4bf;}
+    .stat-number{font-size:1.8rem;font-weight:800;line-height:1;margin-bottom:4px;}
+    .stat-number.pink{background:linear-gradient(135deg,var(--pink),var(--pink-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .stat-number.blue{background:linear-gradient(135deg,#60a5fa,#93c5fd);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .stat-number.green{background:linear-gradient(135deg,#4ade80,#86efac);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .stat-number.purple{background:linear-gradient(135deg,#a78bfa,#c4b5fd);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .stat-number.orange{background:linear-gradient(135deg,#fb923c,#fdba74);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .stat-number.teal{background:linear-gradient(135deg,#2dd4bf,#5eead4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .stat-label{font-size:0.72rem;color:var(--text-muted);font-weight:500;}
+    .stat-delta{font-size:0.62rem;color:var(--green-text);margin-top:4px;}
+
+    /* Activity bar chart */
+    .activity-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:20px;}
+    .activity-title{font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .activity-title i{color:var(--pink-light);}
+    .activity-bars{display:flex;align-items:flex-end;gap:6px;height:80px;}
+    .activity-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+    .activity-bar{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--pink),var(--pink-light));opacity:0.7;transition:opacity 0.2s;min-height:4px;}
+    .activity-bar:hover{opacity:1;}
+    .activity-day{font-size:0.55rem;color:var(--text-dim);}
+
+    /* Recent activity list */
+    .recent-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:20px;}
+    .recent-title{font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+    .recent-title i{color:var(--pink-light);}
+    .recent-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+    .recent-item:last-child{border-bottom:none;padding-bottom:0;}
+    .recent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .recent-dot.pink{background:var(--pink);}
+    .recent-dot.blue{background:#60a5fa;}
+    .recent-dot.green{background:#4ade80;}
+    .recent-text{flex:1;font-size:0.8rem;color:var(--text-muted);}
+    .recent-text strong{color:var(--text);}
+    .recent-time{font-size:0.62rem;color:var(--text-dim);}
+
+    /* ── CARD LIST ── */
+    .card-list{display:flex;flex-direction:column;gap:10px;}
+
+    /* ── ADMIN CARD ── */
+    .admin-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;transition:all 0.22s;position:relative;overflow:hidden;}
+    .admin-card:hover{border-color:var(--border-hover);box-shadow:0 6px 24px rgba(255,20,147,0.06);}
+    .admin-card-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+    .user-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink-light));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden;border:2px solid rgba(255,20,147,0.2);}
+    .user-avatar img{width:100%;height:100%;object-fit:cover;}
+    .admin-card-info{flex:1;min-width:0;}
+    .admin-card-name{font-weight:700;font-size:0.92rem;margin-bottom:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    .admin-card-sub{font-size:0.73rem;color:var(--text-muted);}
+    .admin-card-body{font-size:0.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:12px;word-break:break-word;}
+    .admin-card-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+    .admin-card-meta{font-size:0.68rem;color:var(--text-dim);display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .admin-card-meta span{display:flex;align-items:center;gap:3px;}
+    .card-actions{display:flex;gap:6px;flex-wrap:wrap;}
+
+    /* ── BADGES ── */
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:0.62rem;font-weight:700;}
+    .badge-admin{background:linear-gradient(135deg,var(--pink),var(--pink-light));color:white;}
+    .badge-user{background:rgba(255,255,255,0.07);color:var(--text-muted);}
+    .badge-approved{background:var(--green);color:var(--green-text);}
+    .badge-pending{background:rgba(251,146,60,0.15);color:#fb923c;}
+    .badge-exam{background:var(--pink-pale);color:var(--pink-light);}
+    .badge-rating{background:rgba(251,191,36,0.15);color:#fbbf24;}
+
+    /* ── BUTTONS ── */
+    .btn-delete{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.2);padding:6px 14px;border-radius:20px;color:var(--red-text);cursor:pointer;font-size:0.72rem;font-weight:600;font-family:'Inter',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
+    .btn-delete:hover{background:rgba(239,68,68,0.22);border-color:rgba(239,68,68,0.4);}
+    .btn-make-admin{background:var(--pink-pale);border:1px solid var(--border);padding:6px 14px;border-radius:20px;color:var(--pink-light);cursor:pointer;font-size:0.72rem;font-weight:600;font-family:'Inter',sans-serif;transition:all 0.2s;}
+    .btn-make-admin:hover{background:rgba(255,20,147,0.18);}
+    .btn-approve{background:var(--green);border:1px solid rgba(74,222,128,0.2);padding:6px 14px;border-radius:20px;color:var(--green-text);cursor:pointer;font-size:0.72rem;font-weight:600;font-family:'Inter',sans-serif;transition:all 0.2s;}
+    .btn-approve:hover{background:rgba(74,222,128,0.25);}
+
+    /* ── EMPTY STATE ── */
+    .empty-state{text-align:center;padding:50px 20px;color:var(--text-dim);}
+    .empty-state i{font-size:2.5rem;color:rgba(255,20,147,0.3);margin-bottom:12px;display:block;}
+    .empty-state p{font-size:0.85rem;margin-top:6px;}
+
+    /* ── LOADING SKELETON ── */
+    .skel{background:rgba(255,255,255,0.05);border-radius:8px;animation:skelPulse 1.5s ease-in-out infinite;}
+    @keyframes skelPulse{0%,100%{opacity:0.4}50%{opacity:0.7}}
+    .skel-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;display:flex;gap:12px;}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e1e2e;border:1px solid rgba(255,20,147,0.3);padding:10px 22px;border-radius:50px;font-size:0.8rem;z-index:9999;opacity:0;transition:all 0.3s;white-space:nowrap;pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    /* ── CONFIRM MODAL ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--surface2);border:1px solid var(--border-hover);border-radius:24px;padding:28px 24px;max-width:360px;width:100%;animation:modalIn 0.25s ease;}
+    @keyframes modalIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+    .modal-icon{font-size:2.5rem;text-align:center;margin-bottom:12px;}
+    .modal-title{font-size:1rem;font-weight:700;text-align:center;margin-bottom:8px;}
+    .modal-msg{font-size:0.82rem;color:var(--text-muted);text-align:center;line-height:1.5;margin-bottom:20px;}
+    .modal-actions{display:flex;gap:10px;}
+    .modal-cancel{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:11px;border-radius:14px;color:var(--text-muted);cursor:pointer;font-size:0.85rem;font-family:'Inter',sans-serif;font-weight:600;transition:all 0.2s;}
+    .modal-cancel:hover{background:rgba(255,255,255,0.08);}
+    .modal-confirm{flex:1;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;padding:11px;border-radius:14px;color:white;cursor:pointer;font-size:0.85rem;font-family:'Inter',sans-serif;font-weight:700;transition:all 0.2s;}
+    .modal-confirm:hover{opacity:0.9;}
+    .modal-confirm-pink{flex:1;background:linear-gradient(135deg,var(--pink),var(--pink-light));border:none;padding:11px;border-radius:14px;color:white;cursor:pointer;font-size:0.85rem;font-family:'Inter',sans-serif;font-weight:700;}
+
+    /* ── RESPONSIVE ── */
+    @media(min-width:768px){
+      .sidebar{left:0 !important;}
+      .main{margin-left:260px;}
+      .hamburger{display:none;}
+      .sidebar-overlay{display:none !important;}
+      .stats-grid{grid-template-columns:repeat(4,1fr);}
+    }
+    @media(min-width:1100px){.stats-grid{grid-template-columns:repeat(6,1fr);}}
+
+    /* ── USER AVATAR LARGE ── */
+    .user-avatar-lg{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--pink-light));display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:white;flex-shrink:0;overflow:hidden;cursor:pointer;position:relative;border:3px solid rgba(255,20,147,0.25);transition:all 0.25s;}
+    .user-avatar-lg:hover{border-color:var(--pink);transform:scale(1.06);box-shadow:0 8px 28px rgba(255,20,147,0.3);}
+    .user-avatar-lg img{width:100%;height:100%;object-fit:cover;}
+    .view-photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;color:white;font-size:1.1rem;border-radius:50%;}
+    .user-avatar-lg:hover .view-photo-overlay{opacity:1;}
+    .user-card-top{display:flex;gap:16px;align-items:flex-start;margin-bottom:12px;}
+    .user-card-info{flex:1;min-width:0;}
+    .user-card-name{font-size:0.98rem;font-weight:700;color:var(--text);display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:6px;}
+    .user-email-row{display:flex;align-items:center;gap:7px;font-size:0.8rem;color:var(--pink-light);margin-bottom:6px;word-break:break-all;font-weight:500;}
+    .user-email-row i{font-size:0.72rem;flex-shrink:0;}
+    .user-details-row{display:flex;flex-wrap:wrap;gap:5px 14px;}
+    .user-details-row span{font-size:0.7rem;color:var(--text-muted);display:flex;align-items:center;gap:3px;}
+    .user-bio-preview{background:var(--pink-pale);border-left:2px solid rgba(255,20,147,0.4);padding:9px 12px;border-radius:0 10px 10px 0;font-size:0.78rem;color:var(--text-muted);font-style:italic;margin:10px 0;line-height:1.5;}
+    .verified-chip{font-size:0.6rem;background:rgba(96,165,250,0.12);color:#60a5fa;padding:2px 8px;border-radius:20px;border:1px solid rgba(96,165,250,0.2);}
+    /* Photo lightbox */
+    .photo-lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.93);backdrop-filter:blur(18px);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;cursor:pointer;padding:20px;}
+    .photo-lightbox.open{display:flex;animation:lbIn 0.25s ease;}
+    @keyframes lbIn{from{opacity:0}to{opacity:1}}
+    .photo-lightbox-img{max-width:min(400px,90vw);max-height:72vh;border-radius:22px;object-fit:contain;box-shadow:0 24px 80px rgba(0,0,0,0.8);border:3px solid rgba(255,20,147,0.35);}
+    .photo-lightbox-name{font-size:1.05rem;font-weight:700;color:white;}
+    .photo-lightbox-hint{font-size:0.72rem;color:rgba(255,255,255,0.4);}
+    .photo-lightbox-close{position:fixed;top:16px;right:16px;width:38px;height:38px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:50%;color:white;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+    .photo-lightbox-close:hover{background:rgba(255,20,147,0.3);}
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="logo"><span class="logo-crown">👑</span> Admin Panel</a>
+    <div class="nav-right">
+      <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+      <a href="index.html" class="exit-btn"><i class="fas fa-sign-out-alt"></i> Exit</a>
+    </div>
+  </nav>
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">Overview</div>
+    <div class="sidebar-item active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+
+    <div class="sidebar-section">Content</div>
+    <div class="sidebar-item" data-page="users"><i class="fas fa-users"></i> Users <span class="badge" id="sbUsers">-</span></div>
+    <div class="sidebar-item" data-page="confessions"><i class="fas fa-comment-dots"></i> Confessions <span class="badge" id="sbConfessions">-</span></div>
+    <div class="sidebar-item" data-page="comments"><i class="fas fa-reply"></i> Comments <span class="badge" id="sbComments">-</span></div>
+    <div class="sidebar-item" data-page="materials"><i class="fas fa-book"></i> Study Materials <span class="badge" id="sbMaterials">-</span></div>
+
+    <div class="sidebar-section">Community</div>
+    <div class="sidebar-item" data-page="testimonials"><i class="fas fa-star"></i> Testimonials <span class="badge" id="sbTestimonials" style="background:rgba(251,146,60,0.3);color:#fb923c;">-</span></div>
+    <div class="sidebar-item" data-page="feedback"><i class="fas fa-comment-alt"></i> Feedback <span class="badge" id="sbFeedback">-</span></div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-admin-info">
+        <div class="sidebar-admin-av" id="adminAvatar">👑</div>
+        <div>
+          <div class="sidebar-admin-name" id="adminName">Admin</div>
+          <div class="sidebar-admin-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="mainContent">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="dashboardPage">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="page-icon"><i class="fas fa-chart-line"></i></div>
+          <h1>Dashboard</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn-action" onclick="initDashboard()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card pink"><div class="stat-icon pink"><i class="fas fa-users"></i></div><div class="stat-number pink" id="statUsers">-</div><div class="stat-label">Total Users</div></div>
+        <div class="stat-card blue"><div class="stat-icon blue"><i class="fas fa-comment-dots"></i></div><div class="stat-number blue" id="statConfessions">-</div><div class="stat-label">Confessions</div></div>
+        <div class="stat-card green"><div class="stat-icon green"><i class="fas fa-heart"></i></div><div class="stat-number green" id="statLikes">-</div><div class="stat-label">Likes</div></div>
+        <div class="stat-card purple"><div class="stat-icon purple"><i class="fas fa-book"></i></div><div class="stat-number purple" id="statMaterials">-</div><div class="stat-label">Study Files</div></div>
+        <div class="stat-card orange"><div class="stat-icon orange"><i class="fas fa-reply"></i></div><div class="stat-number orange" id="statComments">-</div><div class="stat-label">Comments</div></div>
+        <div class="stat-card teal"><div class="stat-icon teal"><i class="fas fa-star"></i></div><div class="stat-number teal" id="statTestimonials">-</div><div class="stat-label">Testimonials</div></div>
+      </div>
+
+      <div class="activity-card">
+        <div class="activity-title"><i class="fas fa-chart-bar"></i> Weekly Signups</div>
+        <div class="activity-bars" id="activityBars">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <div class="recent-card">
+        <div class="recent-title"><i class="fas fa-clock"></i> Recent Activity</div>
+        <div id="recentActivity"><div class="empty-state" style="padding:20px;"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="page" id="usersPage">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="page-icon"><i class="fas fa-users"></i></div>
+          <h1>Users</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn-action" onclick="loadUsers()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="usersSearch" placeholder="Search by name or email..." oninput="filterUsers()">
+      </div>
+      <div id="usersList" class="card-list"></div>
+    </div>
+
+    <!-- CONFESSIONS -->
+    <div class="page" id="confessionsPage">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="page-icon"><i class="fas fa-comment-dots"></i></div>
+          <h1>Confessions</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn-action" onclick="loadConfessions()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="confessionsSearch" placeholder="Search confessions..." oninput="filterConfessions()">
+      </div>
+      <div id="confessionsList" class="card-list"></div>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="page" id="commentsPage">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="page-icon"><i class="fas fa-reply"></i></div>
+          <h1>Comments</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn-action" onclick="loadComments()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="commentsList" class="card-list"></div>
+    </div>
+
+    <!-- STUDY MATERIALS -->
+    <div class="page" id="materialsPage">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="page-icon"><i class="fas fa-book"></i></div>
+          <h1>Study Materials</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn-action" onclick="loadMaterials()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="materialsList" class="card-list"></div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="page" id="testimonialsPage">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="page-icon"><i class="fas fa-star"></i></div>
+          <h1>Testimonials</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn-action" id="testimonialsFilter" onclick="toggleTestimonialsFilter()"><i class="fas fa-filter"></i> Pending Only</button>
+          <button class="btn-action" onclick="loadTestimonials()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="testimonialsList" class="card-list"></div>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="page" id="feedbackPage">
+      <div class="page-header">
+        <div class="page-title">
+          <div class="page-icon"><i class="fas fa-comment-alt"></i></div>
+          <h1>Feedback</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn-action" onclick="loadFeedback()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="feedbackList" class="card-list"></div>
+    </div>
+
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- CONFIRM MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-icon" id="modalIcon">⚠️</div>
+      <div class="modal-title" id="modalTitle">Are you sure?</div>
+      <div class="modal-msg" id="modalMsg">This action cannot be undone.</div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="modal-confirm" id="modalConfirmBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let currentUserId = null;
+  let allUsers = [], allConfessions = [], allTestimonials = [];
+  let testimonialsShowPending = false;
+
+  /* ── UTILS ── */
+  function esc(s){ if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  function fmt(d){ if(!d) return '—'; const dt=new Date(d); return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}); }
+  function fmtFull(d){ if(!d) return '—'; return new Date(d).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+  function timeAgo(d){
+    if(!d) return '';
+    const diff=Math.floor((Date.now()-new Date(d))/1000);
+    if(diff<60) return diff+'s ago';
+    if(diff<3600) return Math.floor(diff/60)+'m ago';
+    if(diff<86400) return Math.floor(diff/3600)+'h ago';
+    return Math.floor(diff/86400)+'d ago';
+  }
+  function truncate(s,n){ return s && s.length>n ? s.slice(0,n)+'…' : (s||''); }
+  function avatar(url,name){
+    if(url) return '<img src="'+esc(url)+'" onerror="this.style.display=\'none\';this.parentElement.textContent=\'👤\'" loading="lazy"/>';
+    const initials=(name||'?')[0].toUpperCase();
+    return '<span style="font-size:1rem;font-weight:700;-webkit-text-fill-color:white;">' + initials + '</span>';
+  }
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
+  }
+  function skeletons(n){
+    return Array(n).fill(0).map(()=>`
+      <div class="skel-card">
+        <div class="skel" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+          <div class="skel" style="height:12px;width:40%;"></div>
+          <div class="skel" style="height:10px;width:70%;"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  /* ── MODAL ── */
+  let pendingAction = null;
+  function confirmAction(icon, title, msg, btnLabel, btnClass, fn){
+    document.getElementById('modalIcon').textContent=icon;
+    document.getElementById('modalTitle').textContent=title;
+    document.getElementById('modalMsg').textContent=msg;
+    const btn=document.getElementById('modalConfirmBtn');
+    btn.textContent=btnLabel;
+    btn.className=btnClass;
+    pendingAction=fn;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+  function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); pendingAction=null; }
+  document.getElementById('modalConfirmBtn').addEventListener('click',()=>{ if(pendingAction){ pendingAction(); closeModal(); } });
+  document.getElementById('modalOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('modalOverlay')) closeModal(); });
+
+  /* ── AUTH CHECK ── */
+  async function checkAdmin(){
+    const {data}=await supabaseClient.auth.getSession();
+    if(!data.session){ window.location.href='login.html'; return false; }
+    currentUserId=data.session.user.id;
+    const {data:profile}=await supabaseClient.from('profiles').select('*').eq('id',currentUserId).single();
+    if(!profile||profile.role!=='admin'){
+      showToast('❌ Admin access only!');
+      setTimeout(()=>window.location.href='index.html',2000);
+      return false;
+    }
+    document.getElementById('adminName').textContent=profile.name||'Admin';
+    if(profile.avatar_url){
+      document.getElementById('adminAvatar').innerHTML='<img src="'+esc(profile.avatar_url)+'" style="width:100%;height:100%;object-fit:cover;"/>';
+    }
+    return true;
+  }
+
+  /* ── DASHBOARD ── */
+  async function initDashboard(){
+    try{
+      const [{count:users},{count:confessions},{count:comments},{count:materials},{count:likes},{count:testimonials}] = await Promise.all([
+        supabaseClient.from('profiles').select('*',{count:'exact',head:true}),
+        supabaseClient.from('confessions').select('*',{count:'exact',head:true}),
+        supabaseClient.from('confession_comments').select('*',{count:'exact',head:true}),
+        supabaseClient.from('study_materials').select('*',{count:'exact',head:true}),
+        supabaseClient.from('likes').select('*',{count:'exact',head:true}),
+        supabaseClient.from('testimonials').select('*',{count:'exact',head:true})
+      ]);
+      animateCount('statUsers', users||0);
+      animateCount('statConfessions', confessions||0);
+      animateCount('statComments', comments||0);
+      animateCount('statMaterials', materials||0);
+      animateCount('statLikes', likes||0);
+      animateCount('statTestimonials', testimonials||0);
+      document.getElementById('sbUsers').textContent=users||0;
+      document.getElementById('sbConfessions').textContent=confessions||0;
+      document.getElementById('sbComments').textContent=comments||0;
+      document.getElementById('sbMaterials').textContent=materials||0;
+    }catch(e){console.error(e);}
+    buildActivityChart();
+    loadRecentActivity();
+  }
+
+  function animateCount(id, target){
+    const el=document.getElementById(id);
+    if(!el) return;
+    let current=0;
+    const step=Math.ceil(target/30);
+    const interval=setInterval(()=>{
+      current=Math.min(current+step,target);
+      el.textContent=current.toLocaleString();
+      if(current>=target) clearInterval(interval);
+    },30);
+  }
+
+  function buildActivityChart(){
+    const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const heights=[30,55,40,70,90,80,60];
+    const maxH=Math.max(...heights);
+    const bars=document.getElementById('activityBars');
+    if(!bars) return;
+    bars.innerHTML=days.map((d,i)=>`
+      <div class="activity-bar-col">
+        <div class="activity-bar" style="height:${(heights[i]/maxH*72)+4}px;" title="${heights[i]} signups"></div>
+        <div class="activity-day">${d}</div>
+      </div>`).join('');
+  }
+
+  async function loadRecentActivity(){
+    try{
+      const container=document.getElementById('recentActivity');
+      const [{data:newUsers},{data:newConf},{data:newComm}]=await Promise.all([
+        supabaseClient.from('profiles').select('name,created_at').order('created_at',{ascending:false}).limit(3),
+        supabaseClient.from('confessions').select('exam,created_at').order('created_at',{ascending:false}).limit(3),
+        supabaseClient.from('confession_comments').select('created_at').order('created_at',{ascending:false}).limit(2)
+      ]);
+      const items=[
+        ...(newUsers||[]).map(u=>({dot:'pink',text:`<strong>${esc(u.name||'New user')}</strong> joined`,time:u.created_at})),
+        ...(newConf||[]).map(c=>({dot:'blue',text:`New confession posted in <strong>${esc(c.exam||'General')}</strong>`,time:c.created_at})),
+        ...(newComm||[]).map(c=>({dot:'green',text:`New <strong>comment</strong> on a confession`,time:c.created_at}))
+      ].sort((a,b)=>new Date(b.time)-new Date(a.time)).slice(0,8);
+      if(!items.length){ container.innerHTML='<div class="empty-state" style="padding:20px;"><p>No recent activity</p></div>'; return; }
+      container.innerHTML=items.map(i=>`
+        <div class="recent-item">
+          <div class="recent-dot ${i.dot}"></div>
+          <div class="recent-text">${i.text}</div>
+          <div class="recent-time">${timeAgo(i.time)}</div>
+        </div>`).join('');
+    }catch(e){console.error(e);}
+  }
+
+  /* ── USERS ── */
+  async function loadUsers(){
+    document.getElementById('usersList').innerHTML=skeletons(4);
+    const {data,error}=await supabaseClient.from('profiles').select('*').order('created_at',{ascending:false});
+    allUsers=data||[];
+    renderUsers(allUsers);
+    document.getElementById('sbUsers').textContent=allUsers.length;
+  }
+
+  function renderUsers(users){
+    const container=document.getElementById('usersList');
+    if(!users.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>No users found</p></div>'; return; }
+    container.innerHTML=users.map(u=>{
+      const hasPhoto = u.avatar_url && u.avatar_url.trim() !== '';
+      const avatarInner = hasPhoto
+        ? `<img src="${esc(u.avatar_url)}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\\'font-size:1.6rem;\\'>${(u.name||'?')[0].toUpperCase()}</span>'"/><div class="view-photo-overlay"><i class="fas fa-eye"></i></div>`
+        : `<span style="font-size:1.6rem;font-weight:700;">${(u.name||'?')[0].toUpperCase()}</span>`;
+      return `
+      <div class="admin-card" id="user-${u.id}">
+        <div class="user-card-top">
+          <div class="user-avatar-lg" onclick="viewUserPhoto('${esc(u.avatar_url||'')}','${esc(u.name||'')}')" title="Click to view full photo">${avatarInner}</div>
+          <div class="user-card-info">
+            <div class="user-card-name">
+              ${esc(u.name||'Unknown')}
+              ${u.role==='admin'?'<span class="badge badge-admin">👑 Admin</span>':'<span class="badge badge-user">User</span>'}
+              ${u.is_verified?'<span class="verified-chip">✓ Verified</span>':''}
+            </div>
+            <div class="user-email-row"><i class="fas fa-envelope"></i> ${esc(u.email||'No email on file')}</div>
+            <div class="user-details-row">
+              ${u.category?`<span><i class="fas fa-graduation-cap"></i> ${esc(u.category)}</span>`:''}
+              ${u.gender?`<span>${u.gender==='male'?'👨':u.gender==='female'?'👩':'🧑'} ${esc(u.gender)}</span>`:''}
+              ${u.age?`<span>🎂 Age ${u.age}</span>`:''}
+              ${u.location?`<span><i class="fas fa-map-marker-alt"></i> ${esc(u.location)}</span>`:''}
+            </div>
+          </div>
+        </div>
+        ${u.bio?`<div class="user-bio-preview">"${esc(u.bio.slice(0,140))}${u.bio.length>140?'…':''}"</div>`:''}
+        <div class="admin-card-footer">
+          <div class="admin-card-meta">
+            <span><i class="fas fa-calendar-alt"></i> Joined ${fmt(u.created_at)}</span>
+            <span><i class="fas fa-clock"></i> ${u.last_seen?'Active '+timeAgo(u.last_seen):'Never active'}</span>
+          </div>
+          <div class="card-actions">
+            ${u.role!=='admin'?`<button class="btn-make-admin" onclick="promoteAdmin('${u.id}','${esc(u.name||'this user')}')">👑 Make Admin</button>`:''}
+            ${u.id!==currentUserId?`<button class="btn-delete" onclick="doDeleteUser('${u.id}','${esc(u.name||'this user')}')"><i class="fas fa-trash"></i> Delete</button>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterUsers(){
+    const q=document.getElementById('usersSearch').value.toLowerCase();
+    renderUsers(allUsers.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q)));
+  }
+
+  function viewUserPhoto(url, name) {
+    if (!url || url.trim() === '') { showToast('No profile photo uploaded yet.'); return; }
+    const lb = document.getElementById('photoLightbox');
+    document.getElementById('lbImg').src  = url;
+    document.getElementById('lbName').textContent = name || '';
+    lb.classList.add('open');
+  }
+  function closePhotoLightbox() {
+    document.getElementById('photoLightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePhotoLightbox(); });
+
+  async function promoteAdmin(userId,name){
+    confirmAction('👑','Make Admin?',`Give ${name} full admin access?`,'Yes, Promote','modal-confirm-pink',async()=>{
+      const {error}=await supabaseClient.from('profiles').update({role:'admin'}).eq('id',userId);
+      if(error) showToast('❌ Failed: '+error.message);
+      else{ showToast('✅ '+name+' is now Admin!'); loadUsers(); }
+    });
+  }
+
+  async function doDeleteUser(userId,name){
+    confirmAction('🗑️','Delete User?',`This will permanently delete ${name} and all their data.`,'Delete','modal-confirm',async()=>{
+      await Promise.all([
+        supabaseClient.from('likes').delete().or(`from_user.eq.${userId},to_user.eq.${userId}`),
+        supabaseClient.from('messages').delete().or(`from_user.eq.${userId},to_user.eq.${userId}`),
+        supabaseClient.from('confessions').delete().eq('user_id',userId),
+        supabaseClient.from('confession_comments').delete().eq('user_id',userId),
+        supabaseClient.from('study_materials').delete().eq('uploaded_by',userId),
+        supabaseClient.from('feedback').delete().eq('user_id',userId),
+        supabaseClient.from('testimonials').delete().eq('user_id',userId)
+      ]);
+      await supabaseClient.from('profiles').delete().eq('id',userId);
+      showToast('✅ User deleted');
+      document.getElementById('user-'+userId)?.remove();
+      allUsers=allUsers.filter(u=>u.id!==userId);
+    });
+  }
+
+  /* ── CONFESSIONS ── */
+  async function loadConfessions(){
+    document.getElementById('confessionsList').innerHTML=skeletons(4);
+    const {data}=await supabaseClient.from('confessions').select('*').order('created_at',{ascending:false});
+    allConfessions=data||[];
+    renderConfessions(allConfessions);
+    document.getElementById('sbConfessions').textContent=allConfessions.length;
+  }
+
+  function renderConfessions(list){
+    const container=document.getElementById('confessionsList');
+    if(!list.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-comment-dots"></i><p>No confessions found</p></div>'; return; }
+    container.innerHTML=list.map(c=>`
+      <div class="admin-card" id="conf-${c.id}">
+        <div class="admin-card-header">
+          <div class="user-avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">${c.gender==='male'?'👨':c.gender==='female'?'👩':'🕊️'}</div>
+          <div class="admin-card-info">
+            <div class="admin-card-name">
+              <span class="badge badge-exam">${esc(c.exam||'General')}</span>
+              <span class="badge badge-user">❤️ ${c.likes||0}</span>
+            </div>
+            <div class="admin-card-sub">${fmtFull(c.created_at)}</div>
+          </div>
+        </div>
+        <div class="admin-card-body">"${esc(truncate(c.text,300))}"</div>
+        <div class="admin-card-footer">
+          <div class="admin-card-meta"><span><i class="fas fa-clock"></i> ${timeAgo(c.created_at)}</span></div>
+          <button class="btn-delete" onclick="doDeleteConfession('${c.id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function filterConfessions(){
+    const q=document.getElementById('confessionsSearch').value.toLowerCase();
+    renderConfessions(allConfessions.filter(c=>(c.text||'').toLowerCase().includes(q)||(c.exam||'').toLowerCase().includes(q)));
+  }
+
+  async function doDeleteConfession(id){
+    confirmAction('🗑️','Delete Confession?','This confession and all its comments will be removed.','Delete','modal-confirm',async()=>{
+      await supabaseClient.from('confession_comments').delete().eq('confession_id',id);
+      await supabaseClient.from('confessions').delete().eq('id',id);
+      showToast('✅ Confession deleted');
+      document.getElementById('conf-'+id)?.remove();
+      allConfessions=allConfessions.filter(c=>c.id!==id);
+    });
+  }
+
+  /* ── COMMENTS ── */
+  async function loadComments(){
+    document.getElementById('commentsList').innerHTML=skeletons(3);
+    const {data}=await supabaseClient.from('confession_comments').select('*, confessions(text,exam)').order('created_at',{ascending:false});
+    const container=document.getElementById('commentsList');
+    document.getElementById('sbComments').textContent=(data||[]).length;
+    if(!data?.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-reply"></i><p>No comments found</p></div>'; return; }
+    container.innerHTML=data.map(c=>`
+      <div class="admin-card" id="comm-${c.id}">
+        <div class="admin-card-body">
+          <div style="color:var(--pink-light);font-size:0.72rem;margin-bottom:6px;">💬 On: "${esc(truncate(c.confessions?.text||'—',80))}"</div>
+          ${esc(c.text)}
+        </div>
+        <div class="admin-card-footer">
+          <div class="admin-card-meta"><span><i class="fas fa-clock"></i> ${fmtFull(c.created_at)}</span></div>
+          <button class="btn-delete" onclick="doDeleteComment('${c.id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>`).join('');
+  }
+
+  async function doDeleteComment(id){
+    confirmAction('🗑️','Delete Comment?','This comment will be permanently removed.','Delete','modal-confirm',async()=>{
+      await supabaseClient.from('confession_comments').delete().eq('id',id);
+      showToast('✅ Comment deleted');
+      document.getElementById('comm-'+id)?.remove();
+    });
+  }
+
+  /* ── STUDY MATERIALS ── */
+  async function loadMaterials(){
+    document.getElementById('materialsList').innerHTML=skeletons(3);
+    const {data}=await supabaseClient.from('study_materials').select('*').order('created_at',{ascending:false});
+    const container=document.getElementById('materialsList');
+    document.getElementById('sbMaterials').textContent=(data||[]).length;
+    if(!data?.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-book"></i><p>No study materials found</p></div>'; return; }
+    const uploaderIds=[...new Set(data.map(m=>m.uploaded_by).filter(Boolean))];
+    let uploaderNames={};
+    if(uploaderIds.length){
+      const {data:profs}=await supabaseClient.from('profiles').select('id,name').in('id',uploaderIds);
+      (profs||[]).forEach(p=>uploaderNames[p.id]=p.name);
+    }
+    container.innerHTML=data.map(m=>{
+      const ext=(m.file_name||'').split('.').pop().toLowerCase();
+      const icons={pdf:'📄',doc:'📝',docx:'📝',ppt:'📊',pptx:'📊',txt:'📋',jpg:'🖼️',png:'🖼️'};
+      const icon=icons[ext]||'📁';
+      return `
+        <div class="admin-card" id="mat-${m.id}">
+          <div class="admin-card-header">
+            <div class="user-avatar" style="background:rgba(251,146,60,0.15);font-size:1.3rem;">${icon}</div>
+            <div class="admin-card-info">
+              <div class="admin-card-name">${esc(m.title)}</div>
+              <div class="admin-card-sub">${esc(m.category||'—')} • By ${esc(uploaderNames[m.uploaded_by]||'Unknown')}</div>
+            </div>
+          </div>
+          <div class="admin-card-footer">
+            <div class="admin-card-meta">
+              <span>⬇️ ${m.downloads||0} downloads</span>
+              <span><i class="fas fa-calendar-alt"></i> ${fmt(m.created_at)}</span>
+            </div>
+            <div class="card-actions">
+              ${m.file_url?`<a href="${esc(m.file_url)}" target="_blank" class="btn-action" style="text-decoration:none;"><i class="fas fa-external-link-alt"></i> View</a>`:''}
+              <button class="btn-delete" onclick="doDeleteMaterial('${m.id}')"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function doDeleteMaterial(id){
+    confirmAction('🗑️','Delete Material?','This study material will be permanently removed.','Delete','modal-confirm',async()=>{
+      await supabaseClient.from('study_materials').delete().eq('id',id);
+      showToast('✅ Material deleted');
+      document.getElementById('mat-'+id)?.remove();
+    });
+  }
+
+  /* ── TESTIMONIALS ── */
+  async function loadTestimonials(){
+    document.getElementById('testimonialsList').innerHTML=skeletons(3);
+    const {data}=await supabaseClient.from('testimonials').select('*').order('created_at',{ascending:false});
+    allTestimonials=data||[];
+    const pending=(allTestimonials.filter(t=>!t.is_approved)).length;
+    document.getElementById('sbTestimonials').textContent=pending||allTestimonials.length;
+    renderTestimonials();
+  }
+
+  function renderTestimonials(){
+    const container=document.getElementById('testimonialsList');
+    const list=testimonialsShowPending ? allTestimonials.filter(t=>!t.is_approved) : allTestimonials;
+    if(!list.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-star"></i><p>No testimonials found</p></div>'; return; }
+    container.innerHTML=list.map(t=>`
+      <div class="admin-card" id="test-${t.id}">
+        <div class="admin-card-header">
+          <div class="user-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);font-size:1.1rem;">⭐</div>
+          <div class="admin-card-info">
+            <div class="admin-card-name">
+              ${esc(t.name||'Anonymous')}
+              <span class="badge ${t.is_approved?'badge-approved':'badge-pending'}">${t.is_approved?'Approved':'Pending'}</span>
+            </div>
+            <div class="admin-card-sub">${esc(t.exam||'Aspirant')} • ${fmtFull(t.created_at)}</div>
+          </div>
+        </div>
+        <div class="admin-card-body">"${esc(t.message)}"</div>
+        <div class="admin-card-footer">
+          <div class="admin-card-meta"><span><i class="fas fa-clock"></i> ${timeAgo(t.created_at)}</span></div>
+          <div class="card-actions">
+            ${!t.is_approved?`<button class="btn-approve" onclick="approveTestimonial('${t.id}')"><i class="fas fa-check"></i> Approve</button>`:''}
+            <button class="btn-delete" onclick="doDeleteTestimonial('${t.id}')"><i class="fas fa-trash"></i> Delete</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function toggleTestimonialsFilter(){
+    testimonialsShowPending=!testimonialsShowPending;
+    const btn=document.getElementById('testimonialsFilter');
+    btn.innerHTML=testimonialsShowPending?'<i class="fas fa-list"></i> Show All':'<i class="fas fa-filter"></i> Pending Only';
+    renderTestimonials();
+  }
+
+  async function approveTestimonial(id){
+    const {error}=await supabaseClient.from('testimonials').update({is_approved:true}).eq('id',id);
+    if(error) showToast('❌ Failed: '+error.message);
+    else{
+      showToast('✅ Testimonial approved!');
+      allTestimonials=allTestimonials.map(t=>t.id===id?{...t,is_approved:true}:t);
+      renderTestimonials();
+    }
+  }
+
+  async function doDeleteTestimonial(id){
+    confirmAction('🗑️','Delete Testimonial?','This testimonial will be permanently removed.','Delete','modal-confirm',async()=>{
+      await supabaseClient.from('testimonials').delete().eq('id',id);
+      showToast('✅ Testimonial deleted');
+      document.getElementById('test-'+id)?.remove();
+      allTestimonials=allTestimonials.filter(t=>t.id!==id);
+    });
+  }
+
+  /* ── FEEDBACK ── */
+  async function loadFeedback(){
+    document.getElementById('feedbackList').innerHTML=skeletons(3);
+    const {data}=await supabaseClient.from('feedback').select('*').order('created_at',{ascending:false});
+    const container=document.getElementById('feedbackList');
+    document.getElementById('sbFeedback').textContent=(data||[]).length;
+    if(!data?.length){ container.innerHTML='<div class="empty-state"><i class="fas fa-comment-alt"></i><p>No feedback found</p></div>'; return; }
+    container.innerHTML=data.map(f=>`
+      <div class="admin-card" id="feed-${f.id}">
+        <div class="admin-card-header">
+          <div class="user-avatar" style="background:linear-gradient(135deg,#2dd4bf,#5eead4);font-size:1.1rem;">💬</div>
+          <div class="admin-card-info">
+            <div class="admin-card-name">
+              ${esc(f.user_name||'Anonymous')}
+              <span class="badge badge-exam">${esc(f.type||'general')}</span>
+              ${f.rating?`<span class="badge badge-rating">⭐ ${f.rating}/5</span>`:''}
+            </div>
+            <div class="admin-card-sub">${esc(f.user_email||'No email')} • ${fmtFull(f.created_at)}</div>
+          </div>
+        </div>
+        <div class="admin-card-body">${esc(f.message)}</div>
+        <div class="admin-card-footer">
+          <div class="admin-card-meta"><span><i class="fas fa-clock"></i> ${timeAgo(f.created_at)}</span></div>
+          <button class="btn-delete" onclick="doDeleteFeedback('${f.id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>`).join('');
+  }
+
+  async function doDeleteFeedback(id){
+    confirmAction('🗑️','Delete Feedback?','This feedback entry will be permanently removed.','Delete','modal-confirm',async()=>{
+      await supabaseClient.from('feedback').delete().eq('id',id);
+      showToast('✅ Feedback deleted');
+      document.getElementById('feed-'+id)?.remove();
+    });
+  }
+
+  /* ── NAVIGATION ── */
+  const pageLoaders = {
+    dashboard: initDashboard,
+    users: loadUsers,
+    confessions: loadConfessions,
+    comments: loadComments,
+    materials: loadMaterials,
+    testimonials: loadTestimonials,
+    feedback: loadFeedback
+  };
+
+  document.querySelectorAll('.sidebar-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+      item.classList.add('active');
+      const page=item.dataset.page;
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.getElementById(page+'Page').classList.add('active');
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('open');
+      if(pageLoaders[page]) pageLoaders[page]();
+    });
+  });
+
+  document.getElementById('hamburgerBtn').addEventListener('click',()=>{
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+  });
+  document.getElementById('sidebarOverlay').addEventListener('click',()=>{
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  });
+
+  /* ── INIT ── */
+  async function init(){
+    const ok=await checkAdmin();
+    if(!ok) return;
+    await initDashboard();
+  }
+  init();
+</script>
+
+<!-- PHOTO LIGHTBOX -->
+<div class="photo-lightbox" id="photoLightbox" onclick="closePhotoLightbox()">
+  <button class="photo-lightbox-close" onclick="closePhotoLightbox();event.stopPropagation()"><i class="fas fa-times"></i></button>
+  <img class="photo-lightbox-img" id="lbImg" src="" alt="Profile Photo" onclick="event.stopPropagation()" onerror="this.src='';this.alt='Photo unavailable'"/>
+  <div class="photo-lightbox-name" id="lbName"></div>
+  <div class="photo-lightbox-hint">Click anywhere to close &nbsp;·&nbsp; Esc to dismiss</div>
+</div>
+<div id="offline-bar" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:8000;background:rgba(185,28,28,0.97);backdrop-filter:blur(12px);color:#fff;padding:10px 16px;border-radius:14px;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">📡 No internet — some features may not work</div>
+<script>(function(){var b=document.getElementById('offline-bar');function u(){b.style.display=navigator.onLine?'none':'block';}window.addEventListener('online',u);window.addEventListener('offline',u);u();})();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
