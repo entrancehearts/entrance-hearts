@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Login — EntranceHearts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>(function(){const t=localStorage.getItem('eh_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://dzfrwjuugeqzsxrykgjc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZnJ3anV1Z2VxenN4cnlrZ2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzc3MzQsImV4cCI6MjA5MzcxMzczNH0.ahwhlTxsd9v69hVskZv6j34jZDRktEcv6by4kwLkuNQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #06061a;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    /* Vibrant Aurora Background */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .gradient-orb {
+      position: absolute;
+      width: 650px;
+      height: 650px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 20, 147, 0.16), transparent 65%);
+      top: -200px;
+      right: -150px;
+      animation: floatOrb 18s ease-in-out infinite;
+    }
+
+    .gradient-orb-bottom {
+      position: absolute;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110, 40, 220, 0.12), transparent 65%);
+      bottom: -180px;
+      left: -150px;
+      animation: floatOrbReverse 22s ease-in-out infinite;
+    }
+
+    .gradient-orb-cyan {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(20, 190, 220, 0.07), transparent 65%);
+      top: 50%;
+      left: 50%;
+      animation: floatOrbCyan 30s ease-in-out infinite;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-30px, 25px) scale(1.07); }
+    }
+
+    @keyframes floatOrbReverse {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(35px, -30px) scale(1.05); }
+    }
+
+    @keyframes floatOrbCyan {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(40px, -50px); }
+      66% { transform: translate(-30px, 30px); }
+    }
+
+    /* Floating hearts - very subtle */
+    .floating-heart {
+      position: absolute;
+      font-size: 1rem;
+      opacity: 0.04;
+      animation: floatHeart linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatHeart {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.04; }
+      90% { opacity: 0.04; }
+      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Main Layout */
+    .main-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    /* Logo Header */
+    .logo-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .logo-icon {
+      font-size: 2.5rem;
+      display: inline-block;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+    }
+
+    .logo-text span {
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Typing Animation */
+    .subtitle-wrapper {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .animated-subtitle {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.45);
+      display: inline-block;
+      border-right: 1.5px solid #FF1493;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #FF1493; }
+    }
+
+    /* Login Card - Dark theme, subtle borders */
+    .auth-card {
+      background: rgba(18, 18, 26, 0.92);
+      backdrop-filter: blur(16px);
+      border-radius: 32px;
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .auth-card:hover {
+      border-color: rgba(255, 20, 147, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .welcome-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .welcome-sub {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.8rem;
+      margin-bottom: 28px;
+    }
+
+    /* Messages */
+    .error-msg, .success-msg {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    .error-msg {
+      background: rgba(255, 68, 68, 0.1);
+      border-left: 3px solid #ff6666;
+      color: #ffa2a2;
+    }
+
+    .success-msg {
+      background: rgba(76, 175, 80, 0.08);
+      border-left: 3px solid #6fbf6f;
+      color: #a3e0a3;
+    }
+
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .form-group label i {
+      color: #FF6B9D;
+      width: 18px;
+      font-size: 0.8rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 13px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 24px;
+      color: #ffffff;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #FF1493;
+      background: rgba(255, 20, 147, 0.05);
+      box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.08);
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Login Button */
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      border: none;
+      border-radius: 40px;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .login-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 20, 147, 0.3);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Forgot Password */
+    .forgot-link {
+      text-align: center;
+      margin: 8px 0;
+    }
+
+    .forgot-link a {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .forgot-link a:hover {
+      color: #FF6B9D;
+    }
+
+    /* Sign Up Link */
+    .signup-link {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .signup-link a {
+      color: #FF6B9D;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .signup-link a:hover {
+      color: #FF1493;
+    }
+
+    /* Feature Badges */
+    .features-carousel {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .feature-badge {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 20, 147, 0.15);
+      border-radius: 40px;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .feature-badge:hover {
+      border-color: rgba(255, 20, 147, 0.3);
+      background: rgba(255, 20, 147, 0.05);
+    }
+
+    .feature-badge i {
+      color: #FF6B9D;
+      font-size: 0.9rem;
+    }
+
+    .feature-badge span {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+
+    /* Back Button - At Bottom */
+    .back-footer {
+      text-align: center;
+      margin-top: 36px;
+    }
+
+    .back-btn-footer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 40px;
+      padding: 8px 22px;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .back-btn-footer:hover {
+      background: rgba(255, 20, 147, 0.08);
+      border-color: #FF6B9D;
+      color: #FF6B9D;
+      transform: translateX(-3px);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.96);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-card {
+      background: rgba(10,8,32,0.99);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      padding: 28px 24px;
+      text-align: center;
+      max-width: 380px;
+      width: 90%;
+    }
+
+    .modal-card h3 {
+      margin: 10px 0 6px;
+      font-size: 1.3rem;
+      color: #ffffff;
+    }
+
+    .modal-card p {
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 20, 147, 0.25);
+      border-radius: 22px;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .modal-input:focus {
+      outline: none;
+      border-color: #FF1493;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 11px;
+      background: linear-gradient(135deg, #FF1493, #FF6B9D);
+      border: none;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .modal-cancel {
+      width: 100%;
+      padding: 11px;
+      background: transparent;
+      border: 1px solid rgba(255, 20, 147, 0.3);
+      border-radius: 40px;
+      color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-cancel:hover {
+      border-color: #FF6B9D;
+      color: #FF6B9D;
+    }
+
+    .otp-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .otp-input {
+      width: 46px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 20, 147, 0.3);
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .otp-input:focus {
+      outline: none;
+      border-color: #FF1493;
+      background: rgba(255, 20, 147, 0.08);
+    }
+
+    .resend-link {
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .resend-link button {
+      background: none;
+      border: none;
+      color: #FF6B9D;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 550px) {
+      .main-container {
+        padding: 30px 16px;
+      }
+      
+      .auth-card {
+        padding: 28px 22px;
+      }
+      
+      .welcome-title {
+        font-size: 1.5rem;
+      }
+      
+      .logo-text {
+        font-size: 1.3rem;
+      }
+      
+      .feature-badge {
+        padding: 6px 14px;
+      }
+      
+      .feature-badge span {
+        font-size: 0.7rem;
+      }
+      
+      .animated-subtitle {
+        font-size: 0.7rem;
+        white-space: normal;
+        animation: none;
+        border-right: none;
+      }
+      
+      .otp-input {
+        width: 40px;
+        height: 46px;
+        font-size: 1.1rem;
+      }
+      
+      .back-btn-footer {
+        padding: 7px 18px;
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .features-carousel {
+        gap: 8px;
+      }
+      
+      .feature-badge {
+        padding: 5px 12px;
+      }
+      
+      .feature-badge i {
+        font-size: 0.75rem;
+      }
+      
+      .feature-badge span {
+        font-size: 0.65rem;
+      }
+    }
+
+    /* ── DARK / LIGHT MODE ── */
+    [data-theme="light"] body {
+      background: #f4f4f8;
+      color: #1a1a2e;
+    }
+    [data-theme="light"] .auth-card {
+      background: rgba(255,255,255,0.97);
+      border-color: rgba(255,20,147,0.18);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+    [data-theme="light"] .welcome-title,
+    [data-theme="light"] .logo-text { color: #1a1a2e; }
+    [data-theme="light"] .welcome-sub,
+    [data-theme="light"] .animated-subtitle { color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .form-label { color: rgba(0,0,0,0.65); }
+    [data-theme="light"] .form-input {
+      background: rgba(0,0,0,0.04);
+      border-color: rgba(255,20,147,0.2);
+      color: #1a1a2e;
+    }
+    [data-theme="light"] .form-input::placeholder { color: rgba(0,0,0,0.35); }
+    [data-theme="light"] .form-input:focus { border-color: #FF1493; background: rgba(255,20,147,0.04); }
+    [data-theme="light"] .toggle-password { color: rgba(0,0,0,0.45); }
+    [data-theme="light"] .divider-text { color: rgba(0,0,0,0.35); }
+    [data-theme="light"] .divider-line { background: rgba(0,0,0,0.1); }
+    [data-theme="light"] .auth-switch { color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .back-btn-footer { background: rgba(0,0,0,0.04); border-color: rgba(255,20,147,0.18); color: rgba(0,0,0,0.55); }
+    [data-theme="light"] .modal-card { background: #ffffff; border-color: rgba(255,20,147,0.25); }
+    [data-theme="light"] .modal-card h3 { color: #1a1a2e; }
+    [data-theme="light"] .modal-card p { color: rgba(0,0,0,0.5); }
+    [data-theme="light"] .modal-input { background: rgba(0,0,0,0.04); border-color: rgba(255,20,147,0.2); color: #1a1a2e; }
+    [data-theme="light"] .otp-input { background: rgba(0,0,0,0.04); border-color: rgba(255,20,147,0.25); color: #1a1a2e; }
+    [data-theme="light"] .modal-cancel { border-color: rgba(255,20,147,0.25); color: rgba(0,0,0,0.55); }
+    [data-theme="light"] .gradient-orb { background: radial-gradient(circle, rgba(255,20,147,0.07), transparent); }
+    [data-theme="light"] .gradient-orb-bottom { background: radial-gradient(circle, rgba(255,107,157,0.05), transparent); }
+
+    /* Theme Toggle Button */
+    .theme-toggle-float {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1100;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,20,147,0.1);
+      border: 1px solid rgba(255,20,147,0.25);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    [data-theme="light"] .theme-toggle-float { background: rgba(255,20,147,0.08); color: #FF1493; border-color: rgba(255,20,147,0.2); }
+    .theme-toggle-float:hover { background: rgba(255,20,147,0.2); transform: scale(1.1); }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle-float" onclick="toggleTheme()" id="themeBtn" title="Toggle light/dark mode"><i class="fas fa-moon" id="themeIcon"></i></button>
+
+  <div class="animated-bg">
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb-bottom"></div>
+    <div class="gradient-orb-cyan"></div>
+  </div>
+
+  <div class="main-container">
+    <!-- Logo Header -->
+    <div class="logo-header">
+      <div class="logo-icon">💕</div>
+      <div class="logo-text">Welcome to <span>EntranceHearts</span></div>
+    </div>
+
+    <!-- Animated Subtitle -->
+    <div class="subtitle-wrapper">
+      <div class="animated-subtitle">Nepal's Dating App for CEE | IOE | +2 | Management Students</div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="auth-card">
+      <div class="welcome-title">Welcome Back!</div>
+      <div class="welcome-sub">Login to continue your journey</div>
+
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="success-msg" id="successMsg"></div>
+
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email Address</label>
+        <input type="email" id="email" placeholder="your@email.com" autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="password" placeholder="Enter your password" />
+      </div>
+
+      <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+        <i class="fas fa-arrow-right-to-bracket"></i> Login to EntranceHearts
+      </button>
+
+      <div class="forgot-link">
+        <a id="forgotPasswordLink"><i class="far fa-question-circle"></i> Forgot password?</a>
+      </div>
+
+      <!-- Sign Up Link Inside Card -->
+      <div class="signup-link">
+        ✨ New here? <a href="signup.html">Create free account <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <!-- Feature Badges -->
+    <div class="features-carousel">
+      <div class="feature-badge"><i class="fas fa-heart"></i><span>Perfect Match</span></div>
+      <div class="feature-badge"><i class="fas fa-comment-dots"></i><span>Confessions</span></div>
+      <div class="feature-badge"><i class="fas fa-book-open"></i><span>Study Hub</span></div>
+      <div class="feature-badge"><i class="fas fa-clock"></i><span>Timer</span></div>
+    </div>
+
+    <!-- Back Button - At Bottom (Not Congested) -->
+    <div class="back-footer">
+      <a href="index.html" class="back-btn-footer">
+        <i class="fas fa-chevron-left"></i> Back to Home
+      </a>
+    </div>
+  </div>
+
+  <!-- Reset Password Modals -->
+  <div id="resetEmailModal" class="modal-overlay">
+    <div class="modal-card">
+      <i class="fas fa-key" style="font-size: 2rem; color: #FF6B9D;"></i>
+      <h3>Reset Password</h3>
+      <p>Enter your email to receive OTP</p>
+      <input type="email" id="resetEmail" class="modal-input" placeholder="your@email.com" />
+      <button id="sendOtpBtn" class="modal-btn">Send OTP</button>
+      <button onclick="closeResetEmailModal()" class="modal-cancel">Cancel</button>
+    </div>
+  </div>
+
+  <div id="otpModal" class="modal-overlay">
+    <div class="modal-card">
+      <i class="fas fa-envelope-open-text" style="font-size: 1.8rem;"></i>
+      <h3>Verification Code</h3>
+      <p>OTP sent to <strong id="otpEmailDisplay" style="color:#FF6B9D;"></strong></p>
+      <div class="otp-inputs">
+        <input class="otp-input" id="otp1" maxlength="1" oninput="otpMove(this,'otp2')" onkeydown="otpBack(event,this,'')">
+        <input class="otp-input" id="otp2" maxlength="1" oninput="otpMove(this,'otp3')" onkeydown="otpBack(event,this,'otp1')">
+        <input class="otp-input" id="otp3" maxlength="1" oninput="otpMove(this,'otp4')" onkeydown="otpBack(event,this,'otp2')">
+        <input class="otp-input" id="otp4" maxlength="1" oninput="otpMove(this,'otp5')" onkeydown="otpBack(event,this,'otp3')">
+        <input class="otp-input" id="otp5" maxlength="1" oninput="otpMove(this,'otp6')" onkeydown="otpBack(event,this,'otp4')">
+        <input class="otp-input" id="otp6" maxlength="1" oninput="otpMove(this,'')" onkeydown="otpBack(event,this,'otp5')">
+      </div>
+      <button id="verifyOtpBtn" class="modal-btn">Verify OTP</button>
+      <div class="resend-link">
+        <span>Didn't receive code?</span>
+        <button id="resendOtpBtn">Resend OTP</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="newPasswordModal" class="modal-overlay">
+    <div class="modal-card">
+      <i class="fas fa-lock" style="font-size: 1.8rem;"></i>
+      <h3>Create New Password</h3>
+      <input type="password" id="newPassword" class="modal-input" placeholder="New password (min 8 characters)" />
+      <input type="password" id="confirmPassword" class="modal-input" placeholder="Confirm password" />
+      <button id="updatePasswordBtn" class="modal-btn">Update Password</button>
+    </div>
+  </div>
+
+  <script>
+    // Create Floating Hearts - VERY SUBTLE
+    function createFloatingHearts() {
+      const container = document.querySelector('.animated-bg');
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerHTML = ['💕', '❤️', '💖', '💗'][Math.floor(Math.random() * 4)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+        heart.style.animationDuration = (Math.random() * 12 + 10) + 's';
+        heart.style.animationDelay = Math.random() * 15 + 's';
+        container.appendChild(heart);
+      }
+    }
+    createFloatingHearts();
+
+    // Check existing session
+    async function checkSession() {
+      const { data } = await supabaseClient.auth.getSession();
+      if (data.session) {
+        window.location.href = 'browse.html';
+      }
+    }
+    checkSession();
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.innerHTML = '⚠️ ' + msg;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 4000);
+    }
+
+    function showSuccess(msg) {
+      const el = document.getElementById('successMsg');
+      el.innerHTML = '✅ ' + msg;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 4000);
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('loginBtn');
+
+      if (!email || !password) {
+        showError('Please fill in all fields!');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+
+        const { data: profile } = await supabaseClient.from('profiles').select('id').eq('id', data.user.id).single();
+        
+        const tempUser = localStorage.getItem('ehTempUser');
+        if (tempUser && !profile) {
+          const userData = JSON.parse(tempUser);
+          await supabaseClient.from('profiles').insert({ id: data.user.id, ...userData });
+          localStorage.removeItem('ehTempUser');
+       }
+
+        showSuccess('Login successful! Redirecting...');
+        setTimeout(() => {
+          window.location.href = 'browse.html';
+        }, 1000);
+      } catch (err) {
+        showError(err.message || 'Invalid email or password!');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to EntranceHearts';
+      }
+    }
+
+    document.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    // OTP Functions
+    let resetEmailGlobal = '';
+    let resendTimer = null;
+    let resendSeconds = 30;
+
+    function openResetEmailModal() {
+      document.getElementById('resetEmailModal').classList.add('active');
+      document.getElementById('resetEmail').value = '';
+    }
+
+    function closeResetEmailModal() {
+      document.getElementById('resetEmailModal').classList.remove('active');
+    }
+
+    function closeOtpModal() {
+      document.getElementById('otpModal').classList.remove('active');
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById(`otp${i}`).value = '';
+      }
+    }
+
+    function closeNewPasswordModal() {
+      document.getElementById('newPasswordModal').classList.remove('active');
+    }
+
+    function otpMove(current, nextId) {
+      current.value = current.value.replace(/[^0-9]/g, '');
+      if (current.value.length === 1 && nextId) {
+        document.getElementById(nextId).focus();
+      }
+    }
+
+    function otpBack(e, current, prevId) {
+      if (e.key === 'Backspace' && current.value === '' && prevId) {
+        document.getElementById(prevId).focus();
+      }
+    }
+
+    function getOtpValue() {
+      return ['otp1', 'otp2', 'otp3', 'otp4', 'otp5', 'otp6'].map(id => document.getElementById(id).value).join('');
+    }
+
+    async function sendOtp() {
+      const email = document.getElementById('resetEmail').value.trim();
+      if (!email) {
+        showError('Please enter your email');
+        return;
+      }
+
+      const btn = document.getElementById('sendOtpBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending...';
+
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: 'https://entrancehearts.github.io/entrancehearts/update-password.html'
+        });
+        if (error) throw error;
+
+        resetEmailGlobal = email;
+        document.getElementById('otpEmailDisplay').textContent = email;
+        closeResetEmailModal();
+        document.getElementById('otpModal').classList.add('active');
+        showSuccess('OTP sent to your email!');
+
+        const resendBtn = document.getElementById('resendOtpBtn');
+        resendSeconds = 30;
+        resendBtn.disabled = true;
+        resendBtn.textContent = `Resend (${resendSeconds}s)`;
+        
+        if (resendTimer) clearInterval(resendTimer);
+        resendTimer = setInterval(() => {
+          resendSeconds--;
+          if (resendSeconds <= 0) {
+            clearInterval(resendTimer);
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'Resend OTP';
+          } else {
+            resendBtn.textContent = `Resend (${resendSeconds}s)`;
+          }
+        }, 1000);
+      } catch (err) {
+        showError(err.message || 'Failed to send OTP.');
+      }
+      btn.disabled = false;
+      btn.innerHTML = 'Send OTP';
+    }
+
+    async function verifyOtp() {
+      const otp = getOtpValue();
+      if (otp.length !== 6) {
+        showError('Please enter the 6-digit OTP');
+        return;
+      }
+
+      const btn = document.getElementById('verifyOtpBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying...';
+
+      try {
+        const { error } = await supabaseClient.auth.verifyOtp({
+          email: resetEmailGlobal,
+          token: otp,
+          type: 'email'
+        });
+        if (error) throw error;
+
+        closeOtpModal();
+        document.getElementById('newPasswordModal').classList.add('active');
+        showSuccess('OTP verified! Set your new password.');
+      } catch (err) {
+        showError(err.message || 'Invalid OTP. Please try again.');
+      }
+      btn.disabled = false;
+      btn.innerHTML = 'Verify OTP';
+    }
+
+    async function updatePassword() {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (newPassword.length < 8) {
+        showError('Password must be at least 8 characters');
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        showError('Passwords do not match');
+        return;
+      }
+
+      const btn = document.getElementById('updatePasswordBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Updating...';
+
+      try {
+        const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+
+        closeNewPasswordModal();
+        showSuccess('Password updated successfully! Please login with your new password.');
+      } catch (err) {
+        showError(err.message || 'Failed to update password');
+      }
+      btn.disabled = false;
+      btn.innerHTML = 'Update Password';
+    }
+
+    async function resendOtp() {
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(resetEmailGlobal, {
+          redirectTo: 'https://entrancehearts.github.io/entrancehearts/update-password.html'
+        });
+        if (error) throw error;
+        showSuccess('New OTP sent!');
+        
+        const resendBtn = document.getElementById('resendOtpBtn');
+        resendSeconds = 30;
+        resendBtn.disabled = true;
+        if (resendTimer) clearInterval(resendTimer);
+        resendTimer = setInterval(() => {
+          resendSeconds--;
+          if (resendSeconds <= 0) {
+            clearInterval(resendTimer);
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'Resend OTP';
+          } else {
+            resendBtn.textContent = `Resend (${resendSeconds}s)`;
+          }
+        }, 1000);
+      } catch (err) {
+        showError(err.message || 'Failed to resend OTP');
+      }
+    }
+
+    // Event Listeners
+    document.getElementById('forgotPasswordLink').addEventListener('click', openResetEmailModal);
+    document.getElementById('sendOtpBtn').addEventListener('click', sendOtp);
+    document.getElementById('verifyOtpBtn').addEventListener('click', verifyOtp);
+    document.getElementById('updatePasswordBtn').addEventListener('click', updatePassword);
+    document.getElementById('resendOtpBtn').addEventListener('click', resendOtp);
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('eh_theme', next);
+      document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    (function(){
+      const t = localStorage.getItem('eh_theme') || 'dark';
+      const icon = document.getElementById('themeIcon');
+      if (icon) icon.className = t === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    })();
+  </script>
+<div id="offline-bar" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:8000;background:rgba(185,28,28,0.97);backdrop-filter:blur(12px);color:#fff;padding:10px 16px;border-radius:14px;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">📡 No internet — some features may not work</div>
+<script>(function(){var b=document.getElementById('offline-bar');function u(){b.style.display=navigator.onLine?'none':'block';}window.addEventListener('online',u);window.addEventListener('offline',u);u();})();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
