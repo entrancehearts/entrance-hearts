@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>Welcome — EntranceHearts</title>
+  <link rel="icon" href="icon-192.png"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#06061a;--card:rgba(255,255,255,0.055);--border:rgba(255,255,255,0.09);--text:rgba(255,255,255,0.93);--muted:rgba(255,255,255,0.5);--pink:#FF1493;}
+    html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;}
+    body{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:0;overflow-x:hidden;}
+    .amb{position:fixed;pointer-events:none;border-radius:50%;z-index:0;}
+    .amb1{top:-80px;left:-60px;width:360px;height:360px;background:radial-gradient(circle,rgba(255,20,147,0.09),transparent 70%);}
+    .amb2{bottom:-60px;right:-60px;width:320px;height:320px;background:radial-gradient(circle,rgba(110,40,210,0.08),transparent 70%);}
+    .wrap{position:relative;z-index:1;width:100%;max-width:460px;padding:24px 16px 48px;min-height:100vh;display:flex;flex-direction:column;}
+    .logo{text-align:center;margin-bottom:28px;margin-top:env(safe-area-inset-top,16px);}
+    .logo-txt{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .progress-bar{background:rgba(255,255,255,0.08);border-radius:50px;height:4px;width:100%;margin-bottom:32px;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#FF1493,#FF6B9D);border-radius:50px;transition:width 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+    .step{display:none;}
+    .step.active{display:block;animation:fadeUp 0.4s ease;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .step-header{text-align:center;margin-bottom:28px;}
+    .step-emoji{font-size:3rem;display:block;margin-bottom:10px;animation:float 3s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .step-num{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,20,147,0.8);margin-bottom:6px;}
+    h2{font-size:1.5rem;font-weight:900;margin-bottom:6px;}
+    .step-sub{font-size:0.82rem;color:var(--muted);line-height:1.5;}
+    .chip-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+    .chip{background:rgba(255,255,255,0.06);border:1.5px solid var(--border);border-radius:50px;padding:9px 16px;font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.18s;-webkit-tap-highlight-color:transparent;user-select:none;}
+    .chip:hover{background:rgba(255,20,147,0.08);border-color:rgba(255,20,147,0.2);}
+    .chip.sel{background:rgba(255,20,147,0.14);border-color:rgba(255,20,147,0.45);color:var(--pink);font-weight:700;}
+    .chip.sel-cat{background:rgba(255,20,147,0.14);border-color:rgba(255,20,147,0.45);color:var(--pink);font-weight:700;}
+    .hint{font-size:0.68rem;color:var(--muted);margin-top:6px;text-align:center;}
+    .form-group{margin-bottom:14px;}
+    .form-group label{display:block;font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+    .form-group input,.form-group textarea,.form-group select{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:12px 14px;font-size:0.88rem;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;}
+    .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:rgba(255,20,147,0.35);background:rgba(255,20,147,0.03);}
+    .form-group textarea{resize:vertical;min-height:80px;}
+    .form-group select{appearance:none;cursor:pointer;}
+    .form-group select option{background:#0e0c26;color:#fff;}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .btn-row{display:flex;gap:10px;margin-top:28px;}
+    .btn-next{flex:1;background:linear-gradient(135deg,#FF1493,#FF6B9D);border:none;color:#fff;border-radius:50px;padding:14px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;}
+    .btn-next:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,20,147,0.4);}
+    .btn-next:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none;}
+    .btn-back{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:14px 20px;font-size:0.92rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;}
+    .btn-back:hover{background:rgba(255,255,255,0.1);}
+    .err{font-size:0.78rem;color:#ff6b6b;text-align:center;margin-top:8px;min-height:18px;}
+  </style>
+</head>
+<body>
+  <div class="amb amb1"></div>
+  <div class="amb amb2"></div>
+  <div class="wrap">
+    <div class="logo"><span class="logo-txt">💕 EntranceHearts</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:33%"></div></div>
+
+    <!-- STEP 1: Exam Category -->
+    <div class="step active" id="step1">
+      <div class="step-header">
+        <span class="step-emoji">🎯</span>
+        <div class="step-num">Step 1 of 3</div>
+        <h2>What are you preparing for?</h2>
+        <p class="step-sub">Choose your exam category so we can find the best matches for you.</p>
+      </div>
+      <div class="chip-grid" id="catChips">
+        <span class="chip" onclick="selectCat(this,'CEE')">🏥 CEE (MBBS/BDS)</span>
+        <span class="chip" onclick="selectCat(this,'IOE')">⚙️ IOE (Engineering)</span>
+        <span class="chip" onclick="selectCat(this,'+2')">📖 NEB +2 Science</span>
+        <span class="chip" onclick="selectCat(this,'Management')">🏦 Management</span>
+        <span class="chip" onclick="selectCat(this,'BIM')">💻 BIM / CSIT</span>
+        <span class="chip" onclick="selectCat(this,'BBA')">📊 BBA / BBS</span>
+        <span class="chip" onclick="selectCat(this,'Law')">⚖️ Law</span>
+        <span class="chip" onclick="selectCat(this,'Other')">🎓 Other</span>
+      </div>
+      <div class="err" id="err1"></div>
+      <div class="btn-row"><button class="btn-next" onclick="next1()">Continue →</button></div>
+    </div>
+
+    <!-- STEP 2: Interests -->
+    <div class="step" id="step2">
+      <div class="step-header">
+        <span class="step-emoji">⚡</span>
+        <div class="step-num">Step 2 of 3</div>
+        <h2>What are you into?</h2>
+        <p class="step-sub">Pick up to 5 interests to help us find like-minded people.</p>
+      </div>
+      <div class="chip-grid" id="interestChips">
+        <span class="chip" onclick="toggleInterest(this,'📚 Studying')">📚 Studying</span>
+        <span class="chip" onclick="toggleInterest(this,'🎵 Music')">🎵 Music</span>
+        <span class="chip" onclick="toggleInterest(this,'🎮 Gaming')">🎮 Gaming</span>
+        <span class="chip" onclick="toggleInterest(this,'🏀 Sports')">🏀 Sports</span>
+        <span class="chip" onclick="toggleInterest(this,'📷 Photography')">📷 Photography</span>
+        <span class="chip" onclick="toggleInterest(this,'✈️ Travel')">✈️ Travel</span>
+        <span class="chip" onclick="toggleInterest(this,'🍕 Food')">🍕 Food</span>
+        <span class="chip" onclick="toggleInterest(this,'📝 Writing')">📝 Writing</span>
+        <span class="chip" onclick="toggleInterest(this,'🎨 Art')">🎨 Art</span>
+        <span class="chip" onclick="toggleInterest(this,'💻 Coding')">💻 Coding</span>
+        <span class="chip" onclick="toggleInterest(this,'🌿 Nature')">🌿 Nature</span>
+        <span class="chip" onclick="toggleInterest(this,'🎤 Singing')">🎤 Singing</span>
+        <span class="chip" onclick="toggleInterest(this,'📖 Reading')">📖 Reading</span>
+        <span class="chip" onclick="toggleInterest(this,'🏔️ Hiking')">🏔️ Hiking</span>
+        <span class="chip" onclick="toggleInterest(this,'🌙 Night Owl')">🌙 Night Owl</span>
+      </div>
+      <p class="hint" id="interestHint">0 / 5 selected</p>
+      <div class="err" id="err2"></div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-next" onclick="next2()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: About You -->
+    <div class="step" id="step3">
+      <div class="step-header">
+        <span class="step-emoji">✨</span>
+        <div class="step-num">Step 3 of 3</div>
+        <h2>A little about you</h2>
+        <p class="step-sub">Almost there! A complete profile gets 3× more matches.</p>
+      </div>
+      <div class="form-group"><label>Your Name</label><input type="text" id="fName" placeholder="What should people call you?" maxlength="40"/></div>
+      <div class="row2">
+        <div class="form-group"><label>Age</label>
+          <select id="fAge"><option value="">Age</option>
+            <option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Gender</label>
+          <select id="fGender"><option value="">Prefer not to say</option><option>Male</option><option>Female</option><option>Non-binary</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Location (District)</label><input type="text" id="fLocation" placeholder="e.g. Kathmandu, Pokhara…" maxlength="50"/></div>
+      <div class="form-group"><label>Bio — introduce yourself 👋</label><textarea id="fBio" placeholder="What should your matches know about you? What are your goals?" maxlength="200"></textarea></div>
+      <div class="err" id="err3"></div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn-next" id="submitBtn" onclick="submit()">🎉 Get Started</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://dzfrwjuugeqzsxrykgjc.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZnJ3anV1Z2VxenN4cnlrZ2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzc3MzQsImV4cCI6MjA5MzcxMzczNH0.ahwhlTxsd9v69hVskZv6j34jZDRktEcv6by4kwLkuNQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    let selectedCat = '';
+    let selectedInterests = [];
+    let currentStep = 1;
+
+    function goStep(n) {
+      document.getElementById('step' + currentStep).classList.remove('active');
+      currentStep = n;
+      document.getElementById('step' + currentStep).classList.add('active');
+      const fills = [33, 66, 100];
+      document.getElementById('progressFill').style.width = fills[n-1] + '%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectCat(el, cat) {
+      document.querySelectorAll('#catChips .chip').forEach(c => c.classList.remove('sel-cat'));
+      el.classList.add('sel-cat');
+      selectedCat = cat;
+      document.getElementById('err1').textContent = '';
+    }
+
+    function toggleInterest(el, interest) {
+      if (el.classList.contains('sel')) {
+        el.classList.remove('sel');
+        selectedInterests = selectedInterests.filter(i => i !== interest);
+      } else {
+        if (selectedInterests.length >= 5) { return; }
+        el.classList.add('sel');
+        selectedInterests.push(interest);
+      }
+      document.getElementById('interestHint').textContent = `${selectedInterests.length} / 5 selected`;
+      document.getElementById('err2').textContent = '';
+    }
+
+    function next1() {
+      if (!selectedCat) { document.getElementById('err1').textContent = 'Please choose your exam category.'; return; }
+      goStep(2);
+    }
+
+    function next2() {
+      if (selectedInterests.length === 0) { document.getElementById('err2').textContent = 'Please select at least one interest.'; return; }
+      goStep(3);
+    }
+
+    async function submit() {
+      const name = document.getElementById('fName').value.trim();
+      const age = document.getElementById('fAge').value;
+      const gender = document.getElementById('fGender').value;
+      const location = document.getElementById('fLocation').value.trim();
+      const bio = document.getElementById('fBio').value.trim();
+
+      if (!name) { document.getElementById('err3').textContent = 'Please enter your name.'; return; }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true; btn.textContent = 'Saving…';
+
+      try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) { location.href = 'login.html'; return; }
+
+        const profileData = {
+          id: user.id,
+          name,
+          category: selectedCat,
+          interests: selectedInterests,
+          bio: bio || null,
+          location: location || null,
+          gender: gender || null,
+          onboarded: true,
+          updated_at: new Date().toISOString()
+        };
+        if (age) profileData.age = parseInt(age);
+
+        const { error } = await supabaseClient.from('profiles').upsert(profileData, { onConflict: 'id' });
+
+        if (error) throw error;
+
+        localStorage.setItem('eh_onboarded', '1');
+        location.href = 'browse.html';
+      } catch(e) {
+        btn.disabled = false; btn.textContent = '🎉 Get Started';
+        document.getElementById('err3').textContent = 'Something went wrong. Please try again.';
+      }
+    }
+
+    async function checkAlreadyOnboarded() {
+      if (localStorage.getItem('eh_onboarded')) { location.href = 'browse.html'; return; }
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) { location.href = 'login.html'; return; }
+      const { data: profile } = await supabaseClient.from('profiles').select('onboarded').eq('id', user.id).single();
+      if (profile?.onboarded) { localStorage.setItem('eh_onboarded','1'); location.href = 'browse.html'; }
+    }
+
+    checkAlreadyOnboarded();
+  </script>
+  <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
