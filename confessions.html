@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Confession Wall 💌 — EntranceHearts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (function(){const t=localStorage.getItem('eh_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+    const SUPABASE_URL = 'https://dzfrwjuugeqzsxrykgjc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6ZnJ3anV1Z2VxenN4cnlrZ2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzc3MzQsImV4cCI6MjA5MzcxMzczNH0.ahwhlTxsd9v69hVskZv6j34jZDRktEcv6by4kwLkuNQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+
+  <style>
+    :root {
+      --bg: #06061a;
+      --card-bg: rgba(255,255,255,0.055);
+      --nav-bg: rgba(6,6,26,0.97);
+      --menu-bg: rgba(12,10,38,0.98);
+      --text: rgba(255,255,255,0.93);
+      --text-muted: rgba(255,255,255,0.55);
+      --text-faint: rgba(255,255,255,0.3);
+      --border: rgba(255,255,255,0.09);
+      --border-focus: rgba(255,20,147,0.6);
+      --input-bg: rgba(255,255,255,0.06);
+      --tab-bg: rgba(255,255,255,0.07);
+      --skel-bg: rgba(255,255,255,0.07);
+      --shadow: 0 8px 40px rgba(0,0,0,0.55);
+    }
+    [data-theme="light"] {
+      --bg: #f4f4f8;
+      --card-bg: rgba(255,255,255,0.97);
+      --nav-bg: rgba(255,255,255,0.97);
+      --menu-bg: #fff;
+      --text: rgba(0,0,0,0.88);
+      --text-muted: rgba(0,0,0,0.52);
+      --text-faint: rgba(0,0,0,0.32);
+      --border: rgba(255,20,147,0.14);
+      --border-focus: rgba(255,20,147,0.45);
+      --input-bg: rgba(0,0,0,0.04);
+      --tab-bg: rgba(0,0,0,0.05);
+      --skel-bg: rgba(0,0,0,0.07);
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-thumb{background:#FF1493;border-radius:10px;}
+
+    /* AURORA BG */
+    .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+    .bg-glow::before{content:'';position:absolute;width:70vw;height:70vw;max-width:700px;max-height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,20,147,0.16) 0%,transparent 65%);top:-180px;left:-150px;animation:bg1 26s ease-in-out infinite;}
+    .bg-glow::after{content:'';position:absolute;width:55vw;height:55vw;max-width:580px;max-height:580px;border-radius:50%;background:radial-gradient(circle,rgba(120,40,220,0.12) 0%,transparent 65%);bottom:-120px;right:-120px;animation:bg2 32s ease-in-out infinite;}
+    .bg-glow .aurora-cyan{content:'';position:absolute;width:45vw;height:45vw;max-width:500px;max-height:500px;border-radius:50%;background:radial-gradient(circle,rgba(20,190,220,0.07) 0%,transparent 65%);top:40%;left:55%;animation:bg3 38s ease-in-out infinite;}
+    @keyframes bg1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.05)}}
+    @keyframes bg2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-45px,-55px) scale(1.08)}}
+    @keyframes bg3{0%,100%{transform:translate(0,0)}33%{transform:translate(-30px,40px)}66%{transform:translate(40px,-20px)}}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:12px 20px;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;transition:background 0.3s;}
+    .logo{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+    .desktop-nav{display:none;gap:6px;align-items:center;}
+    .btn-ghost-nav{color:var(--text-muted);padding:6px 13px;border-radius:50px;text-decoration:none;font-size:0.78rem;font-weight:500;transition:all 0.2s;}
+    .btn-ghost-nav:hover{color:#FF6B9D;background:rgba(255,20,147,0.08);}
+    .btn-primary-nav{background:linear-gradient(135deg,#FF1493,#FF6B9D);color:white;padding:6px 18px;border-radius:50px;text-decoration:none;font-size:0.78rem;font-weight:600;}
+    @media(min-width:768px){.desktop-nav{display:flex;}.mobile-menu-btn-wrap{display:none;}}
+    .mobile-menu-btn-wrap{display:flex;align-items:center;gap:8px;}
+    .mobile-menu-btn{background:rgba(255,20,147,0.1);border:1px solid rgba(255,20,147,0.25);border-radius:10px;padding:8px 12px;color:#FF6B9D;cursor:pointer;font-size:1rem;}
+    .theme-toggle{background:var(--tab-bg);border:1px solid var(--border);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);font-size:0.8rem;transition:all 0.2s;flex-shrink:0;}
+    .theme-toggle:hover{background:rgba(255,20,147,0.12);border-color:rgba(255,20,147,0.4);color:#FF6B9D;}
+    .mobile-menu{position:fixed;top:62px;right:-100%;width:260px;background:var(--menu-bg);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:14px;z-index:999;transition:right 0.3s ease;box-shadow:0 20px 50px rgba(0,0,0,0.4);}
+    .mobile-menu.open{right:16px;}
+    .mobile-menu-item{display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-radius:10px;font-size:0.85rem;transition:all 0.2s;}
+    .mobile-menu-item:hover{background:rgba(255,20,147,0.1);color:#FF6B9D;}
+    .menu-divider{height:1px;background:var(--border);margin:6px 0;}
+
+    /* HERO */
+    .hero-banner{position:relative;z-index:1;padding:82px 20px 26px;text-align:center;}
+    .hero-icon{font-size:2.4rem;margin-bottom:10px;display:inline-block;animation:float 3s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    .hero-banner h1{font-size:1.7rem;font-weight:800;background:linear-gradient(135deg,#FF1493,#FF6B9D,#FFD700);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .hero-banner p{color:var(--text-muted);font-size:0.8rem;margin-top:5px;}
+    .hero-stats{display:flex;justify-content:center;gap:28px;margin-top:18px;}
+    .hero-stat{text-align:center;}
+    .hero-stat .number{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .hero-stat .label{font-size:0.62rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;}
+    .live-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,20,147,0.1);border:1px solid rgba(255,20,147,0.25);color:#FF6B9D;font-size:0.65rem;font-weight:600;padding:4px 12px;border-radius:50px;margin-top:12px;}
+    .live-dot{width:6px;height:6px;border-radius:50%;background:#FF1493;animation:blink 1s infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+    /* CONTAINER */
+    .container{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:20px 16px 110px;}
+
+    /* POST FORM */
+    .post-form{background:var(--card-bg);border:1px solid var(--border);border-radius:24px;padding:20px;margin-bottom:22px;transition:border-color 0.25s;box-shadow:var(--shadow);backdrop-filter:blur(12px);}
+    .post-form:focus-within{border-color:var(--border-focus);}
+    .anon-note{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--text-faint);margin-bottom:10px;}
+    .anon-dot{width:6px;height:6px;border-radius:50%;background:#FF1493;flex-shrink:0;animation:blink 1.5s infinite;}
+    .post-form textarea{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:16px;padding:14px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.88rem;resize:none;min-height:100px;outline:none;line-height:1.6;transition:border-color 0.2s;}
+    .post-form textarea:focus{border-color:var(--border-focus);background:rgba(255,20,147,0.03);}
+    .post-form textarea::placeholder{color:var(--text-faint);}
+    .form-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:10px;}
+    .char-count{font-size:0.68rem;color:var(--text-faint);}
+    .char-count.warn{color:#FF6B9D;}
+    .post-btn{padding:9px 22px;border-radius:50px;background:linear-gradient(135deg,#FF1493,#B020D8);border:none;color:white;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:6px;box-shadow:0 4px 18px rgba(255,20,147,0.3);}
+    .post-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,20,147,0.5);}
+    .post-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+    /* FILTER TABS */
+    .filter-tabs{display:flex;gap:7px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+    .filter-tabs::-webkit-scrollbar{display:none;}
+    .filter-btn{background:var(--tab-bg);border:1px solid var(--border);padding:7px 16px;border-radius:50px;color:var(--text-muted);font-size:0.73rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;flex-shrink:0;}
+    .filter-btn.active{background:linear-gradient(135deg,#FF1493,#FF6B9D);border-color:transparent;color:white;}
+    .filter-btn:hover:not(.active){border-color:rgba(255,20,147,0.4);color:#FF6B9D;}
+
+    /* TRENDING SECTION */
+    .trending-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:0.75rem;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.06em;}
+    .trending-header i{color:#FF6B9D;}
+
+    /* CONFESSION CARD */
+    .confessions-list{display:flex;flex-direction:column;gap:14px;}
+    .confession-card{background:var(--card-bg);border:1px solid var(--border);border-radius:22px;padding:18px;transition:all 0.28s;animation:cardIn 0.35s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;backdrop-filter:blur(12px);}
+    @keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .confession-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:22px 22px 0 0;}
+    .confession-card:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(255,20,147,0.15);border-color:rgba(255,20,147,0.22);}
+
+    /* Exam-type accent bars */
+    .exam-cee::before{background:linear-gradient(90deg,#FF1493,#FF6B9D);}
+    .exam-ioe::before{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+    .exam-plus2::before{background:linear-gradient(90deg,#22c55e,#4ade80);}
+    .exam-management::before{background:linear-gradient(90deg,#a855f7,#c084fc);}
+    .exam-general::before{background:linear-gradient(90deg,rgba(255,20,147,0.4),rgba(255,107,157,0.3));}
+    .exam-cee{border-color:rgba(255,20,147,0.2);}
+    .exam-ioe{border-color:rgba(59,130,246,0.2);}
+    .exam-plus2{border-color:rgba(34,197,94,0.2);}
+    .exam-management{border-color:rgba(168,85,247,0.2);}
+
+    .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px;}
+    .anon-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,20,147,0.1);border:1px solid rgba(255,20,147,0.2);padding:4px 12px;border-radius:50px;font-size:0.68rem;color:#FF6B9D;font-weight:600;}
+    .owner-chip{background:rgba(255,20,147,0.2);color:#FF1493;font-size:0.58rem;padding:1px 7px;border-radius:20px;margin-left:4px;}
+    .card-meta{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .timestamp{font-size:0.62rem;color:var(--text-faint);}
+    .delete-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:0.65rem;padding:4px 8px;border-radius:20px;transition:all 0.2s;}
+    .delete-btn:hover{color:#FF1493;background:rgba(255,20,147,0.1);}
+
+    .confession-text{font-size:0.9rem;line-height:1.65;color:var(--text);margin-bottom:12px;word-break:break-word;}
+
+    /* Exam tag colors */
+    .exam-tag{display:inline-block;padding:3px 12px;border-radius:50px;font-size:0.63rem;font-weight:700;border:1px solid;}
+    .tag-cee{background:rgba(255,20,147,0.12);border-color:rgba(255,20,147,0.3);color:#FF6B9D;}
+    .tag-ioe{background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);color:#93c5fd;}
+    .tag-plus2{background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.3);color:#86efac;}
+    .tag-management{background:rgba(168,85,247,0.12);border-color:rgba(168,85,247,0.3);color:#c4b5fd;}
+    .tag-general{background:rgba(255,255,255,0.05);border-color:var(--border);color:var(--text-muted);}
+
+    /* REACTION BUTTONS */
+    .reaction-row{display:flex;align-items:center;gap:5px;margin-top:12px;flex-wrap:wrap;}
+    .react-btn{background:var(--input-bg);border:1px solid var(--border);border-radius:50px;padding:5px 10px;font-size:0.82rem;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:3px;font-family:'Inter',sans-serif;}
+    .react-btn:hover{background:rgba(255,20,147,0.1);border-color:rgba(255,20,147,0.3);transform:scale(1.1);}
+    .react-btn.reacted{background:rgba(255,20,147,0.15);border-color:rgba(255,20,147,0.4);}
+    .react-count{font-size:0.7rem;color:var(--text-muted);}
+
+    /* ACTION BAR */
+    .action-bar{display:flex;align-items:center;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;}
+    .action-btn{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:0.78rem;display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:30px;font-family:'Inter',sans-serif;transition:all 0.2s;}
+    .action-btn:hover{color:#FF6B9D;background:rgba(255,20,147,0.08);}
+    .action-btn.liked{color:#FF1493;}
+    .react-total{font-size:0.68rem;color:var(--text-faint);margin-left:auto;}
+
+    /* COMMENTS */
+    .comments-section{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+    .comment-form{display:flex;gap:8px;margin-bottom:12px;}
+    .comment-input{flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:50px;padding:8px 16px;color:var(--text);font-size:0.78rem;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;}
+    .comment-input:focus{border-color:var(--border-focus);}
+    .comment-input::placeholder{color:var(--text-faint);}
+    .comment-post-btn{background:linear-gradient(135deg,#FF1493,#FF6B9D);border:none;padding:8px 16px;border-radius:50px;color:white;font-size:0.74rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;white-space:nowrap;}
+    .comment-post-btn:disabled{opacity:0.5;cursor:not-allowed;}
+    .comment-item{background:var(--input-bg);border-radius:14px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:8px;}
+    .comment-body{flex:1;min-width:0;}
+    .comment-meta{font-size:0.62rem;color:#FF6B9D;margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+    .comment-time{color:var(--text-faint);}
+    .comment-text{font-size:0.78rem;color:var(--text-muted);line-height:1.5;word-break:break-word;}
+    .comment-del{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:0.62rem;padding:3px 6px;border-radius:10px;flex-shrink:0;transition:all 0.2s;}
+    .comment-del:hover{color:#FF1493;background:rgba(255,20,147,0.1);}
+    .no-comments{font-size:0.7rem;color:var(--text-faint);text-align:center;padding:10px;}
+
+    /* SKELETON */
+    .skel-card{background:var(--card-bg);border:1px solid var(--border);border-radius:22px;padding:18px;margin-bottom:14px;}
+    .skel{background:var(--skel-bg);border-radius:8px;animation:sp 1.5s ease-in-out infinite;}
+    @keyframes sp{0%,100%{opacity:0.4}50%{opacity:0.8}}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:50px 20px;background:var(--card-bg);border-radius:22px;border:1px dashed var(--border);}
+    .empty-state i{font-size:2.5rem;color:#FF6B9D;margin-bottom:12px;display:block;opacity:0.4;}
+    .empty-state p{color:var(--text-muted);font-size:0.85rem;line-height:1.6;}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(20,20,35,0.97);border:1px solid rgba(255,20,147,0.3);padding:10px 22px;border-radius:50px;font-size:0.8rem;color:#fff;z-index:9999;opacity:0;pointer-events:none;transition:all 0.3s;white-space:nowrap;max-width:90vw;backdrop-filter:blur(10px);}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    /* SCROLL TOP */
+    .scroll-top{position:fixed;bottom:82px;right:18px;z-index:500;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#FF1493,#FF6B9D);border:none;color:white;font-size:0.9rem;cursor:pointer;box-shadow:0 4px 16px rgba(255,20,147,0.4);opacity:0;transform:translateY(14px);transition:all 0.3s;pointer-events:none;display:flex;align-items:center;justify-content:center;}
+    .scroll-top.visible{opacity:1;transform:translateY(0);pointer-events:all;}
+
+    /* BOTTOM NAV */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--nav-bg);border-top:1px solid var(--border);backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100;transition:background 0.3s;}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-faint);text-decoration:none;font-size:0.61rem;font-weight:600;padding:5px 10px;border-radius:30px;transition:all 0.2s;position:relative;}
+    .nav-item span:first-child{font-size:1.2rem;}
+    .nav-item:hover,.nav-item.active{color:#FF6B9D;}
+    .chat-unread-badge{position:absolute;top:0;right:4px;background:linear-gradient(135deg,#FF1493,#c0105e);color:#fff;font-size:0.5rem;font-weight:800;padding:1px 4px;border-radius:20px;min-width:14px;text-align:center;line-height:1.6;border:2px solid #06061a;pointer-events:none;display:none;animation:badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+    @keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
+    .btn-ghost-nav{position:relative;}
+    .btn-ghost-nav .chat-unread-badge{top:-4px;right:-4px;}
+
+    .back-footer{text-align:center;margin-top:24px;padding-bottom:10px;}
+    .back-btn-footer{display:inline-flex;align-items:center;gap:6px;background:var(--tab-bg);border:1px solid var(--border);border-radius:40px;padding:9px 22px;color:var(--text-muted);text-decoration:none;font-size:0.8rem;font-weight:500;transition:all 0.2s;}
+    .back-btn-footer:hover{border-color:rgba(255,20,147,0.4);color:#FF6B9D;}
+
+    @media(max-width:480px){.hero-banner{padding:70px 16px 18px;}.container{padding:16px 12px 110px;}}
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"><div class="aurora-cyan"></div></div>
+  <div class="toast" id="toast"></div>
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">💌 Confession Wall</a>
+    <div class="desktop-nav">
+      <a href="browse.html" class="btn-ghost-nav">🔥 Discover</a>
+      <a href="chat.html" class="btn-ghost-nav">💬 Chats<span class="chat-unread-badge"></span></a>
+      <a href="study.html" class="btn-ghost-nav">📚 Study</a>
+      <a href="help.html" class="btn-ghost-nav">❓ Help</a>
+      <a href="admin.html" class="btn-ghost-nav" id="adminBtn" style="display:none;">👑 Admin</a>
+      <a href="profile.html" class="btn-primary-nav">👤 Profile</a>
+      <button class="theme-toggle" id="notifBtn" onclick="requestNotifications()" title="Enable push notifications"><i class="fas fa-bell-slash"></i></button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas fa-moon" id="themeIcon"></i></button>
+    </div>
+    <div class="mobile-menu-btn-wrap">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas fa-moon" id="themeIconMob"></i></button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="browse.html" class="mobile-menu-item">🔥 Discover</a>
+    <a href="chat.html" class="mobile-menu-item">💬 Chats</a>
+    <a href="study.html" class="mobile-menu-item">📚 Study</a>
+    <a href="help.html" class="mobile-menu-item">❓ Help & Guide</a>
+    <a href="admin.html" class="mobile-menu-item" id="mobileAdminBtn" style="display:none;">👑 Admin</a>
+    <div class="menu-divider"></div>
+    <a href="profile.html" class="mobile-menu-item">👤 Profile</a>
+  </div>
+
+  <div class="hero-banner">
+    <div class="hero-icon">💌</div>
+    <h1>Anonymous Confessions</h1>
+    <p>Share freely · React honestly · No login needed</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="number" id="totalConfessions">0</div><div class="label">Confessions</div></div>
+      <div class="hero-stat"><div class="number" id="totalLikes">0</div><div class="label">Reactions</div></div>
+      <div class="hero-stat"><div class="number" id="totalComments">0</div><div class="label">Comments</div></div>
+    </div>
+    <div><div class="live-badge"><div class="live-dot"></div> LIVE</div></div>
+  </div>
+
+  <div class="container">
+
+    <div class="post-form">
+      <div class="anon-note">
+        <div class="anon-dot"></div>
+        Posting as Anonymous — no account needed
+      </div>
+      <textarea id="confessionInput" maxlength="500"
+        placeholder="Share a confession, feeling, secret or study struggle... 💌"></textarea>
+      <div class="form-footer">
+        <span class="char-count" id="charCount">0 / 500</span>
+        <button class="post-btn" id="postBtn" onclick="postConfession()">
+          <i class="fas fa-paper-plane"></i> Post Anonymously
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-tabs">
+      <button class="filter-btn active" data-filter="all">📌 All</button>
+      <button class="filter-btn" data-filter="CEE">🎓 CEE</button>
+      <button class="filter-btn" data-filter="IOE">⚙️ IOE</button>
+      <button class="filter-btn" data-filter="+2">📚 +2</button>
+      <button class="filter-btn" data-filter="Management">💼 Management</button>
+    </div>
+
+    <div class="trending-header"><i class="fas fa-fire"></i> Latest Confessions</div>
+
+    <div id="confessionsList" class="confessions-list">
+      <div class="skel-card">
+        <div class="skel" style="height:12px;width:38%;border-radius:6px;margin-bottom:14px;"></div>
+        <div class="skel" style="height:55px;border-radius:10px;margin-bottom:12px;"></div>
+        <div class="skel" style="height:10px;width:60%;border-radius:6px;"></div>
+      </div>
+      <div class="skel-card">
+        <div class="skel" style="height:12px;width:30%;border-radius:6px;margin-bottom:14px;"></div>
+        <div class="skel" style="height:40px;border-radius:10px;margin-bottom:12px;"></div>
+        <div class="skel" style="height:10px;width:50%;border-radius:6px;"></div>
+      </div>
+    </div>
+
+    <div class="back-footer">
+      <a href="index.html" class="back-btn-footer"><i class="fas fa-chevron-left"></i> Back to Home</a>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="browse.html" class="nav-item"><span>🔥</span><span>Discover</span></a>
+    <a href="chat.html" class="nav-item"><span>💬</span><span>Chats</span><span class="chat-unread-badge"></span></a>
+    <a href="who-liked-me.html" class="nav-item"><span>❤️</span><span>Likes</span><span class="likes-new-badge" style="position:absolute;top:0;right:4px;background:linear-gradient(135deg,#FF1493,#c0105e);color:#fff;font-size:0.5rem;font-weight:800;padding:1px 4px;border-radius:20px;min-width:14px;text-align:center;line-height:1.6;border:2px solid #06061a;pointer-events:none;display:none;"></span></a>
+    <a href="profile.html" class="nav-item"><span>👤</span><span>Profile</span></a>
+  </div>
+
+<script>
+  /* ════════ THEME ════════ */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('eh_theme', newTheme);
+    const cls = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    ['themeIcon','themeIconMob'].forEach(id => { const el=document.getElementById(id); if(el) el.className=cls; });
+  }
+  (function(){
+    const t = localStorage.getItem('eh_theme') || 'dark';
+    const cls = t === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    ['themeIcon','themeIconMob'].forEach(id => { const el=document.getElementById(id); if(el) el.className=cls; });
+  })();
+
+  /* ════════ ANONYMOUS ID ════════ */
+  function getAnonId() {
+    let id = localStorage.getItem('eh_anon_id');
+    if (!id) {
+      id = 'anon_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem('eh_anon_id', id);
+    }
+    return id;
+  }
+  const ANON_ID = getAnonId();
+
+  /* ════════ STATE ════════ */
+  let confessions   = [];
+  let myReactions   = {};
+  let myLikes       = {};
+  let expandedIds   = {};
+  let currentFilter = 'all';
+  let myGender      = null;
+
+  const genderEmoji = { male: '👨', female: '👩', other: '🧑' };
+
+  /* ════════ FETCH CURRENT USER GENDER ════════ */
+  (async function loadMyGender() {
+    try {
+      const { data } = await supabaseClient.auth.getSession();
+      if (!data.session) return;
+      const { data: prof } = await supabaseClient
+        .from('profiles').select('gender').eq('id', data.session.user.id).single();
+      if (prof?.gender) myGender = prof.gender.toLowerCase();
+    } catch {}
+  })();
+
+  try { myReactions = JSON.parse(localStorage.getItem('eh_reactions') || '{}'); } catch { myReactions = {}; }
+  try { myLikes     = JSON.parse(localStorage.getItem('eh_likes')     || '{}'); } catch { myLikes = {}; }
+
+  const EMOJIS = ['❤️','😂','😮','😢','🔥','😍'];
+
+  /* ════════ REALTIME ════════ */
+  function subscribeRealtime() {
+    try {
+      supabaseClient.channel('confessions-live')
+        .on('postgres_changes', { event:'INSERT', schema:'public', table:'confessions' }, (payload) => {
+          loadConfessions();
+          // Show push notification for new confession (not from current anonymous user)
+          if (payload.new && payload.new.anon_id !== ANON_ID) {
+            pushNotif('💌 New Confession', (payload.new.text || '').slice(0, 80));
+          }
+        })
+        .on('postgres_changes', { event:'UPDATE', schema:'public', table:'confessions' },
+          payload => {
+            const idx = confessions.findIndex(c => c.id === payload.new.id);
+            if (idx !== -1) {
+              confessions[idx] = { ...confessions[idx], ...payload.new };
+              updateStats();
+              renderAll();
+            }
+          })
+        .on('postgres_changes', { event:'DELETE', schema:'public', table:'confessions' }, () => loadConfessions())
+        .on('postgres_changes', { event:'*', schema:'public', table:'confession_comments' }, () => loadConfessions())
+        .subscribe();
+    } catch(e) { console.error('Realtime subscription failed:', e); }
+  }
+
+  /* ════════ LOAD CONFESSIONS ════════ */
+  async function loadConfessions() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('confessions').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+
+      const ids = (data || []).map(c => c.id);
+      let commentsMap = {};
+      if (ids.length) {
+        const { data: comments, error: cmtErr } = await supabaseClient
+          .from('confession_comments').select('*').in('confession_id', ids)
+          .order('created_at', { ascending: true });
+        if (!cmtErr) {
+          (comments || []).forEach(c => {
+            if (!commentsMap[c.confession_id]) commentsMap[c.confession_id] = [];
+            commentsMap[c.confession_id].push(c);
+          });
+        }
+      }
+
+      const localLikeCounts = JSON.parse(localStorage.getItem('eh_lc') || '{}');
+      confessions = (data || []).map(c => ({
+        ...c,
+        reactions: (c.reactions && typeof c.reactions === 'object') ? c.reactions : {},
+        likes: Math.max(c.likes || 0, localLikeCounts[c.id] || 0),
+        comments: commentsMap[c.id] || []
+      }));
+
+      updateStats();
+      renderAll();
+    } catch(e) {
+      document.getElementById('confessionsList').innerHTML =
+        '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Could not load. Check connection and try again.</p></div>';
+    }
+  }
+
+  /* ════════ STATS ════════ */
+  function updateStats() {
+    document.getElementById('totalConfessions').textContent = confessions.length;
+    const totalR = confessions.reduce((s, c) => {
+      return s + Object.values(c.reactions || {}).reduce((a, b) => a + (Number(b)||0), 0);
+    }, 0);
+    const totalC = confessions.reduce((s, c) => s + (c.comments?.length || 0), 0);
+    document.getElementById('totalLikes').textContent    = totalR;
+    document.getElementById('totalComments').textContent = totalC;
+  }
+
+  /* ════════ POST CONFESSION ════════ */
+  async function postConfession() {
+    const input = document.getElementById('confessionInput');
+    const btn   = document.getElementById('postBtn');
+    const text  = input.value.trim();
+    if (text.length < 5) { showToast('✏️ Write at least 5 characters'); return; }
+    btn.disabled  = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+    let exam = 'General';
+    const t = text.toLowerCase();
+    if (t.includes('cee')||t.includes('mbbs')||t.includes('medical')) exam = 'CEE';
+    else if (t.includes('ioe')||t.includes('engineering')||t.includes('pulchowk')) exam = 'IOE';
+    else if (t.includes('+2')||t.includes('plus two')||t.includes('see')) exam = '+2';
+    else if (t.includes('management')||t.includes('bbs')||t.includes('bba')) exam = 'Management';
+    try {
+      const insertData = { text, exam, anon_id: ANON_ID, likes: 0, reactions: {} };
+      if (myGender) insertData.gender = myGender;
+      const { error } = await supabaseClient.from('confessions').insert(insertData);
+      if (error) throw error;
+      input.value = '';
+      document.getElementById('charCount').textContent = '0 / 500';
+      showToast('💌 Posted anonymously!');
+      await loadConfessions();
+    } catch(e) { showToast('❌ Failed to post: ' + (e.message || 'Try again')); }
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Anonymously';
+  }
+
+  /* ════════ LIKE ════════ */
+  async function likeConfession(id) {
+    const sid = String(id);
+    if (myLikes[sid]) { showToast('❤️ Already liked!'); return; }
+    const c = confessions.find(c => String(c.id) === sid);
+    if (!c) return;
+    id = sid;
+    myLikes[sid] = true;
+    localStorage.setItem('eh_likes', JSON.stringify(myLikes));
+    c.likes = (c.likes || 0) + 1;
+    // Persist count locally so it survives page reload even if DB sync fails
+    try {
+      const lc = JSON.parse(localStorage.getItem('eh_lc') || '{}');
+      lc[id] = c.likes;
+      localStorage.setItem('eh_lc', JSON.stringify(lc));
+    } catch {}
+    renderAll();
+    updateStats();
+    // Sync to DB in background — never revert the optimistic update
+    try {
+      await supabaseClient.from('confessions').update({ likes: c.likes }).eq('id', id);
+    } catch(e) {
+      // DB sync failed (may be RLS). Like still counts locally.
+      console.warn('Like DB sync failed:', e.message);
+    }
+  }
+
+  /* ════════ REACT ════════ */
+  async function addReaction(id, emojiIndex) {
+    const emoji = EMOJIS[emojiIndex];
+    if (!emoji) return;
+    id = String(id);
+    const key = id + '_' + emojiIndex;
+    if (myReactions[key]) { showToast('Already reacted with ' + emoji); return; }
+    const c = confessions.find(c => String(c.id) === id);
+    if (!c) return;
+    if (!c.reactions || typeof c.reactions !== 'object') c.reactions = {};
+    myReactions[key] = true;
+    localStorage.setItem('eh_reactions', JSON.stringify(myReactions));
+    c.reactions[emoji] = (Number(c.reactions[emoji]) || 0) + 1;
+    updateStats();
+    renderAll();
+    showToast(emoji + ' Reacted!');
+    try {
+      const { error } = await supabaseClient.from('confessions').update({ reactions: c.reactions }).eq('id', id);
+      if (error) console.warn('Reaction save failed (RLS?):', error.message);
+    } catch(e) { console.warn('Reaction network error:', e.message); }
+  }
+
+  /* ════════ DELETE CONFESSION ════════ */
+  async function deleteConfession(id) {
+    id = String(id);
+    const c = confessions.find(c => String(c.id) === id);
+    if (!c || c.anon_id !== ANON_ID) { showToast('❌ Not your confession'); return; }
+    if (!confirm('Delete this confession?')) return;
+    try {
+      await supabaseClient.from('confession_comments').delete().eq('confession_id', id);
+      await supabaseClient.from('confessions').delete().eq('id', id);
+      showToast('🗑️ Deleted');
+      await loadConfessions();
+    } catch { showToast('❌ Delete failed'); }
+  }
+
+  /* ════════ ADD COMMENT ════════ */
+  async function addComment(confessionId) {
+    const input = document.getElementById('ci-' + confessionId);
+    const btn   = document.getElementById('cb-' + confessionId);
+    if (!input) return;
+    const text = input.value.trim();
+    if (text.length < 2) { showToast('Write at least 2 characters'); return; }
+    btn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('confession_comments').insert({
+        confession_id: confessionId, text, anon_id: ANON_ID
+      });
+      if (error) throw error;
+      input.value = '';
+      showToast('💬 Comment posted!');
+      await loadConfessions();
+    } catch(e) { showToast('❌ Comment failed: ' + (e.message || 'Try again')); }
+    btn.disabled = false;
+  }
+
+  /* ════════ DELETE COMMENT ════════ */
+  async function deleteComment(confessionId, commentId, anonId) {
+    if (anonId !== ANON_ID) { showToast('❌ Not your comment'); return; }
+    try {
+      await supabaseClient.from('confession_comments').delete().eq('id', commentId);
+      showToast('🗑️ Comment deleted');
+      await loadConfessions();
+    } catch { showToast('❌ Delete failed'); }
+  }
+
+  /* ════════ TOGGLE COMMENTS ════════ */
+  function toggleComments(id) {
+    expandedIds[id] = !expandedIds[id];
+    renderAll();
+    if (expandedIds[id]) {
+      setTimeout(() => {
+        const el = document.getElementById('ci-' + id);
+        if (el) el.focus();
+      }, 100);
+    }
+  }
+
+  /* ════════ RENDER ALL ════════ */
+  function renderAll() {
+    const container = document.getElementById('confessionsList');
+    let filtered = currentFilter === 'all'
+      ? confessions
+      : confessions.filter(c => c.exam === currentFilter);
+    if (!filtered.length) {
+      container.innerHTML =
+        '<div class="empty-state"><i class="fas fa-comment-dots"></i><p>No confessions yet' +
+        (currentFilter !== 'all' ? ' in this category' : '') +
+        '.<br/>Be the first to share something!</p></div>';
+      return;
+    }
+    container.innerHTML = filtered.map(c => renderCard(c)).join('');
+  }
+
+  /* ════════ RENDER CARD ════════ */
+  function renderCard(c) {
+    const isOwner  = c.anon_id === ANON_ID;
+    const expanded = expandedIds[c.id];
+    const liked    = !!myLikes[c.id];
+    const reactions = (c.reactions && typeof c.reactions === 'object') ? c.reactions : {};
+    const comments  = c.comments || [];
+
+    const reactBtns = EMOJIS.map((emoji, idx) => {
+      const cnt     = Number(reactions[emoji]) || 0;
+      const reacted = !!myReactions[c.id + '_' + idx];
+      return '<button class="react-btn' + (reacted ? ' reacted' : '') + '" onclick="addReaction(\'' + c.id + '\',' + idx + ')">' +
+        emoji + (cnt > 0 ? '<span class="react-count">' + cnt + '</span>' : '') +
+        '</button>';
+    }).join('');
+
+    const totalReactions = Object.values(reactions).reduce((a, b) => a + (Number(b)||0), 0);
+
+    const commentsHtml = expanded ? (
+      '<div class="comments-section">' +
+      '<div class="comment-form">' +
+      '<input type="text" id="ci-' + c.id + '" class="comment-input" placeholder="Write anonymously..." ' +
+      'onkeypress="if(event.key===\'Enter\')addComment(\'' + c.id + '\')">' +
+      '<button id="cb-' + c.id + '" class="comment-post-btn" onclick="addComment(\'' + c.id + '\')">Send</button>' +
+      '</div>' +
+      (comments.length === 0
+        ? '<div class="no-comments">No comments yet — be first!</div>'
+        : comments.map(cmt =>
+            '<div class="comment-item">' +
+            '<div class="comment-body">' +
+            '<div class="comment-meta">' +
+            '<span>🕊️ Anonymous' + (cmt.anon_id === ANON_ID ? ' <span style="background:rgba(255,20,147,0.2);padding:1px 6px;border-radius:10px;font-size:0.55rem;">You</span>' : '') + '</span>' +
+            '<span class="comment-time">' + formatTime(cmt.created_at) + '</span>' +
+            '</div>' +
+            '<div class="comment-text">' + escapeHtml(cmt.text) + '</div>' +
+            '</div>' +
+            (cmt.anon_id === ANON_ID
+              ? '<button class="comment-del" onclick="deleteComment(\'' + c.id + '\',\'' + cmt.id + '\',\'' + cmt.anon_id + '\')"><i class="fas fa-trash"></i></button>'
+              : '') +
+            '</div>'
+          ).join('')
+      ) +
+      '</div>'
+    ) : '';
+
+    const cGender = (c.gender || '').toLowerCase();
+    const gIcon = genderEmoji[cGender] || '🕊️';
+    const gLabel = cGender === 'male' ? 'Male' : cGender === 'female' ? 'Female' : 'Anonymous';
+
+    const examKey = (c.exam||'General').toLowerCase().replace(/\s+/g,'-').replace(/\+/g,'plus');
+    const tagClass = 'tag-' + examKey;
+    const cardClass = 'exam-' + examKey;
+
+    return '<div class="confession-card ' + cardClass + '" id="card-' + c.id + '">' +
+      '<div class="card-header">' +
+      '<div class="anon-badge">' + gIcon + ' ' + gLabel + (isOwner ? '<span class="owner-chip">You</span>' : '') + '</div>' +
+      '<div class="card-meta">' +
+      '<span class="timestamp" id="ts-' + c.id + '" data-time="' + c.created_at + '">' + formatTime(c.created_at) + '</span>' +
+      (isOwner ? '<button class="delete-btn" onclick="deleteConfession(\'' + c.id + '\')"><i class="fas fa-trash"></i></button>' : '') +
+      '</div></div>' +
+      '<div class="confession-text">' + escapeHtml(c.text) + '</div>' +
+      '<div><span class="exam-tag ' + tagClass + '">' + (c.exam || 'General') + '</span></div>' +
+      '<div class="reaction-row">' + reactBtns + '</div>' +
+      '<div class="action-bar">' +
+      '<button class="action-btn' + (liked ? ' liked' : '') + '" onclick="likeConfession(\'' + c.id + '\')">' +
+      '<i class="fas fa-heart"></i> ' + (c.likes || 0) + ' Likes</button>' +
+      '<button class="action-btn" onclick="toggleComments(\'' + c.id + '\')">' +
+      '<i class="fas fa-comment"></i> ' + comments.length + ' Comment' + (comments.length !== 1 ? 's' : '') +
+      ' <i class="fas fa-chevron-' + (expanded ? 'up' : 'down') + '" style="font-size:0.55rem;opacity:0.4"></i></button>' +
+      (totalReactions > 0 ? '<span class="react-total">' + totalReactions + ' reaction' + (totalReactions !== 1 ? 's' : '') + '</span>' : '') +
+      '</div>' +
+      commentsHtml +
+      '</div>';
+  }
+
+  /* ════════ FORMAT TIME ════════ */
+  function formatTime(iso) {
+    const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if (diff < 10)    return 'just now';
+    if (diff < 60)    return diff + 's ago';
+    if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    const days = Math.floor(diff/86400);
+    if (days < 7) return days + 'd ago';
+    return new Date(iso).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+  }
+
+  setInterval(() => {
+    document.querySelectorAll('[id^="ts-"]').forEach(el => {
+      if (el.dataset.time) el.textContent = formatTime(el.dataset.time);
+    });
+  }, 30000);
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  /* ════════ PUSH NOTIFICATIONS ════════ */
+  function updateNotifBtn() {
+    const btn = document.getElementById('notifBtn');
+    if (!btn) return;
+    const ok = 'Notification' in window && Notification.permission === 'granted';
+    btn.innerHTML = ok ? '<i class="fas fa-bell" style="color:#FF1493"></i>' : '<i class="fas fa-bell-slash"></i>';
+    btn.title = ok ? 'Notifications ON — click to check' : 'Enable notifications';
+  }
+  async function requestNotifications() {
+    if (!('Notification' in window)) { showToast('🔕 Your browser does not support notifications'); return; }
+    if (Notification.permission === 'granted') { showToast('🔔 Notifications are already enabled!'); return; }
+    if (Notification.permission === 'denied') { showToast('🔕 Notifications blocked — please allow in browser settings'); return; }
+    const perm = await Notification.requestPermission();
+    updateNotifBtn();
+    if (perm === 'granted') {
+      localStorage.setItem('eh_notif', '1');
+      showToast('🔔 Notifications enabled! You\'ll get alerts for new confessions.');
+      new Notification('EntranceHearts 💌', { body: 'You\'ll now get notified about new confessions!', icon: 'icon-192.png' });
+    } else {
+      showToast('🔕 Permission denied. Enable in browser settings.');
+    }
+  }
+  function pushNotif(title, body) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    try { new Notification(title, { body, icon: 'icon-192.png', badge: 'icon-192.png' }); } catch(e) {}
+  }
+  // Init notification bell state
+  updateNotifBtn();
+  // Auto-request if user had previously granted
+  if (localStorage.getItem('eh_notif') === '1' && 'Notification' in window && Notification.permission !== 'granted') {
+    localStorage.removeItem('eh_notif');
+  }
+
+  /* ════════ CHAR COUNT ════════ */
+  document.getElementById('confessionInput').addEventListener('input', function() {
+    const len = this.value.length;
+    const el  = document.getElementById('charCount');
+    el.textContent = len + ' / 500';
+    el.classList.toggle('warn', len > 400);
+  });
+
+  /* ════════ FILTER TABS ════════ */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderAll();
+    });
+  });
+
+  /* ════════ SCROLL ════════ */
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
+
+  /* ════════ CHAT BADGE ════════ */
+  // Loaded via chat-badge.js below
+
+  /* ════════ MOBILE MENU ════════ */
+  const menuBtn = document.getElementById('mobileMenuBtn');
+  const mobMenu = document.getElementById('mobileMenu');
+  menuBtn.onclick = () => {
+    const open = mobMenu.classList.toggle('open');
+    menuBtn.textContent = open ? '✕' : '☰';
+  };
+  document.addEventListener('click', e => {
+    if (!mobMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+      mobMenu.classList.remove('open');
+      menuBtn.textContent = '☰';
+    }
+  });
+
+  /* ════════ ADMIN ════════ */
+  (async function checkAdmin() {
+    try {
+      const { data } = await supabaseClient.auth.getSession();
+      if (!data.session) return;
+      const { data: prof } = await supabaseClient
+        .from('profiles').select('role').eq('id', data.session.user.id).single();
+      if (prof?.role === 'admin') {
+        document.getElementById('adminBtn').style.display = 'inline-flex';
+        document.getElementById('mobileAdminBtn').style.display = 'block';
+      }
+    } catch {}
+  })();
+
+  /* ════════ START ════════ */
+  subscribeRealtime();
+  loadConfessions();
+</script>
+<script src="chat-badge.js"></script>
+<script>
+(function(){
+  let py=0,ptrActive=false;
+  const ind=document.createElement('div');
+  ind.style.cssText='display:none;position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:7000;background:rgba(14,12,38,0.95);border:1px solid rgba(255,20,147,0.2);color:rgba(255,255,255,0.7);padding:7px 18px;border-radius:50px;font-size:0.75rem;font-family:Inter,sans-serif;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
+  ind.innerHTML='<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,20,147,0.3);border-top-color:#FF1493;border-radius:50%;animation:ptrs 0.7s linear infinite"></span> Refreshing…';
+  document.body.appendChild(ind);
+  const st=document.createElement('style');
+  st.textContent='@keyframes ptrs{to{transform:rotate(360deg)}}';
+  document.head.appendChild(st);
+  window.addEventListener('touchstart',e=>{py=e.touches[0].clientY;ptrActive=false;},{passive:true});
+  window.addEventListener('touchmove',e=>{if(window.scrollY<5&&e.touches[0].clientY-py>75&&!ptrActive){ptrActive=true;ind.style.display='flex';}},{passive:true});
+  window.addEventListener('touchend',()=>{if(ptrActive){ptrActive=false;setTimeout(()=>{ind.style.display='none';},900);if(typeof loadConfessions==='function')loadConfessions();}},{passive:true});
+})();
+</script>
+<div id="offline-bar" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:8000;background:rgba(185,28,28,0.97);backdrop-filter:blur(12px);color:#fff;padding:10px 16px;border-radius:14px;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">📡 No internet — some features may not work</div>
+<script>(function(){var b=document.getElementById('offline-bar');function u(){b.style.display=navigator.onLine?'none':'block';}window.addEventListener('online',u);window.addEventListener('offline',u);u();})();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
