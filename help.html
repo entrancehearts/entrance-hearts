@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Help & Guide — EntranceHearts ❓</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>
+    (function(){const t=localStorage.getItem('eh_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <style>
+    :root {
+      --bg: #06061a;
+      --card: rgba(255,255,255,0.055);
+      --nav-bg: rgba(6,6,26,0.97);
+      --menu-bg: rgba(12,10,38,0.98);
+      --text: rgba(255,255,255,0.93);
+      --text-muted: rgba(255,255,255,0.58);
+      --text-faint: rgba(255,255,255,0.32);
+      --border: rgba(255,255,255,0.09);
+      --border-focus: rgba(255,20,147,0.55);
+      --skel: rgba(255,255,255,0.07);
+    }
+    [data-theme="light"] {
+      --bg: #f4f4f8;
+      --card: rgba(255,255,255,0.97);
+      --nav-bg: rgba(255,255,255,0.97);
+      --menu-bg: #fff;
+      --text: #1a1a2e;
+      --text-muted: rgba(0,0,0,0.55);
+      --text-faint: rgba(0,0,0,0.35);
+      --border: rgba(255,20,147,0.15);
+      --border-focus: rgba(255,20,147,0.4);
+      --skel: rgba(0,0,0,0.06);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:13px 20px;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;transition:background 0.3s;}
+    .logo{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+    .nav-right{display:flex;align-items:center;gap:8px;}
+    .btn-ghost-nav{color:var(--text-muted);padding:6px 14px;border-radius:50px;text-decoration:none;font-size:0.78rem;font-weight:500;transition:all 0.2s;}
+    .btn-ghost-nav:hover{color:#FF6B9D;background:rgba(255,20,147,0.1);}
+    .btn-primary-nav{background:linear-gradient(135deg,#FF1493,#FF6B9D);color:#fff;padding:6px 16px;border-radius:50px;text-decoration:none;font-size:0.78rem;font-weight:600;}
+    .theme-toggle{background:var(--card);border:1px solid var(--border);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);font-size:0.8rem;transition:all 0.2s;flex-shrink:0;}
+    .theme-toggle:hover{background:rgba(255,20,147,0.12);color:#FF6B9D;}
+    .mobile-menu-btn{background:rgba(255,20,147,0.1);border:1px solid rgba(255,20,147,0.25);border-radius:10px;padding:8px 12px;color:#FF6B9D;cursor:pointer;font-size:1rem;display:none;}
+    @media(max-width:768px){.mobile-menu-btn{display:block;}.desktop-links{display:none!important;}}
+    .mobile-menu{position:fixed;top:62px;right:-100%;width:260px;background:var(--menu-bg);border:1px solid var(--border);border-radius:20px;padding:14px;z-index:999;transition:right 0.3s;box-shadow:0 20px 50px rgba(0,0,0,0.4);}
+    .mobile-menu.open{right:16px;}
+    .mobile-menu-item{display:block;padding:10px 14px;color:var(--text);text-decoration:none;border-radius:10px;font-size:0.85rem;transition:all 0.2s;}
+    .mobile-menu-item:hover{background:rgba(255,20,147,0.1);color:#FF6B9D;}
+    .menu-divider{height:1px;background:var(--border);margin:6px 0;}
+
+    /* HERO */
+    .hero{padding:100px 20px 50px;text-align:center;background:linear-gradient(180deg,rgba(255,20,147,0.07) 0%,transparent 100%);border-bottom:1px solid var(--border);}
+    .hero-icon{font-size:3rem;animation:float 3s ease-in-out infinite;display:inline-block;margin-bottom:14px;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    .hero h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+    .hero p{color:var(--text-muted);font-size:0.9rem;max-width:480px;margin:0 auto;}
+
+    /* CONTAINER */
+    .container{max-width:760px;margin:0 auto;padding:40px 16px 120px;}
+
+    /* SECTION */
+    .section{margin-bottom:48px;}
+    .section-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+    .section-title i{color:#FF6B9D;}
+
+    /* STEPS */
+    .steps{display:flex;flex-direction:column;gap:16px;}
+    .step{display:flex;gap:16px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;transition:all 0.25s;}
+    .step:hover{border-color:rgba(255,20,147,0.35);transform:translateX(4px);}
+    .step-num{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#FF1493,#FF6B9D);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#fff;flex-shrink:0;}
+    .step-body h3{font-size:0.92rem;font-weight:700;color:var(--text);margin-bottom:5px;}
+    .step-body p{font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
+    .step-body a{color:#FF6B9D;text-decoration:none;font-weight:600;}
+
+    /* FEATURE CARDS */
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+    .feature-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;text-align:center;transition:all 0.25s;}
+    .feature-card:hover{border-color:rgba(255,20,147,0.35);transform:translateY(-3px);}
+    .feature-icon{font-size:2rem;margin-bottom:10px;display:block;}
+    .feature-card h3{font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px;}
+    .feature-card p{font-size:0.76rem;color:var(--text-muted);line-height:1.5;}
+
+    /* FAQ */
+    .faq-list{display:flex;flex-direction:column;gap:10px;}
+    .faq-item{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s;}
+    .faq-item.open{border-color:rgba(255,20,147,0.35);}
+    .faq-q{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;cursor:pointer;font-size:0.88rem;font-weight:600;color:var(--text);gap:10px;user-select:none;}
+    .faq-q i{color:#FF6B9D;font-size:0.8rem;transition:transform 0.3s;flex-shrink:0;}
+    .faq-item.open .faq-q i{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.35s ease;padding:0 18px;font-size:0.82rem;color:var(--text-muted);line-height:1.65;}
+    .faq-item.open .faq-a{max-height:300px;padding:0 18px 16px;}
+    .faq-a a{color:#FF6B9D;text-decoration:none;font-weight:600;}
+
+    /* TIPS */
+    .tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+    .tip-card{background:var(--card);border:1px solid var(--border);border-left:3px solid #FF6B9D;border-radius:16px;padding:16px 18px;}
+    .tip-card.blue{border-left-color:#60a5fa;}
+    .tip-card.green{border-left-color:#4ade80;}
+    .tip-card.purple{border-left-color:#c084fc;}
+    .tip-card h4{font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+    .tip-card p{font-size:0.76rem;color:var(--text-muted);line-height:1.5;}
+
+    /* CONTACT */
+    .contact-box{background:linear-gradient(135deg,rgba(255,20,147,0.08),rgba(255,107,157,0.05));border:1px solid rgba(255,20,147,0.25);border-radius:24px;padding:32px;text-align:center;}
+    .contact-box h3{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:8px;}
+    .contact-box p{color:var(--text-muted);font-size:0.85rem;margin-bottom:20px;}
+    .contact-links{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+    .contact-btn{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border);border-radius:50px;padding:10px 22px;color:var(--text);text-decoration:none;font-size:0.82rem;font-weight:600;transition:all 0.2s;}
+    .contact-btn:hover{border-color:rgba(255,20,147,0.4);color:#FF6B9D;}
+    .contact-btn.primary{background:linear-gradient(135deg,#FF1493,#FF6B9D);border:none;color:#fff;}
+    .contact-btn.primary:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(255,20,147,0.4);}
+
+    /* BOTTOM NAV */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--nav-bg);border-top:1px solid var(--border);backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100;}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-faint);text-decoration:none;font-size:0.61rem;font-weight:600;padding:5px 10px;border-radius:30px;transition:all 0.2s;}
+    .nav-item span:first-child{font-size:1.2rem;}
+    .nav-item:hover,.nav-item.active{color:#FF6B9D;}
+
+    .back-footer{text-align:center;margin-top:30px;}
+    .back-btn{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:40px;padding:9px 22px;color:var(--text-muted);text-decoration:none;font-size:0.8rem;font-weight:500;transition:all 0.2s;}
+    .back-btn:hover{border-color:rgba(255,20,147,0.4);color:#FF6B9D;}
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">❓ Help &amp; Guide</a>
+    <div class="nav-right">
+      <div class="desktop-links" style="display:flex;gap:6px;align-items:center;">
+        <a href="browse.html" class="btn-ghost-nav">🔥 Discover</a>
+        <a href="chat.html" class="btn-ghost-nav">💬 Chats</a>
+        <a href="confessions.html" class="btn-ghost-nav">💌 Wall</a>
+        <a href="study.html" class="btn-ghost-nav">📚 Study</a>
+        <a href="profile.html" class="btn-primary-nav">👤 Profile</a>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas fa-moon" id="themeIcon"></i></button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="browse.html" class="mobile-menu-item">🔥 Discover</a>
+    <a href="chat.html" class="mobile-menu-item">💬 Chats</a>
+    <a href="confessions.html" class="mobile-menu-item">💌 Confession Wall</a>
+    <a href="study.html" class="mobile-menu-item">📚 Study</a>
+    <div class="menu-divider"></div>
+    <a href="profile.html" class="mobile-menu-item">👤 Profile</a>
+  </div>
+
+  <div class="hero">
+    <div class="hero-icon">❓</div>
+    <h1>Help &amp; Guide</h1>
+    <p>Everything you need to know about EntranceHearts — your Nepal aspirant dating &amp; community app</p>
+  </div>
+
+  <div class="container">
+
+    <!-- HOW TO GET STARTED -->
+    <div class="section">
+      <div class="section-title"><i class="fas fa-rocket"></i> Getting Started — 4 Simple Steps</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Create Your Account</h3>
+            <p>Go to <a href="signup.html">Sign Up</a> and enter your name, email, and a strong password. Choose your exam category (CEE, IOE, +2, or Management). This helps us find your best matches!</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Complete Your Profile</h3>
+            <p>Visit <a href="profile.html">Profile</a> to add your photo, write a bio, and fill in your details. Profiles with photos get <strong>3x more matches</strong>. Upload a clear selfie where your face is visible.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Discover &amp; Match</h3>
+            <p>Head to <a href="browse.html">Discover</a> to see other aspirants. Press ❤️ Like on profiles you're interested in. When someone likes you back — it's a <strong>Match!</strong> You can then chat.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Start Chatting</h3>
+            <p>Once matched, go to <a href="chat.html">Chats</a> to send messages. You can send text, emojis, and voice messages. Long-press a message to react to it!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section">
+      <div class="section-title"><i class="fas fa-star"></i> All Features</div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">🔥</span>
+          <h3>Discover</h3>
+          <p>Browse aspirant profiles. Swipe right to like, left to pass. Filter by exam category and gender preference.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💬</span>
+          <h3>Real-time Chat</h3>
+          <p>Message your matches instantly. Send voice notes, reply to messages, and see read receipts.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💌</span>
+          <h3>Confession Wall</h3>
+          <p>Post anonymous confessions about exam life, feelings, or crushes. No login needed to post!</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📚</span>
+          <h3>Study Library</h3>
+          <p>Upload and download study materials organized by CEE, IOE, NEB, and Management subjects.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🤖</span>
+          <h3>AI Match</h3>
+          <p>Answer personality questions and let our AI suggest your best-suited match based on compatibility.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⏱️</span>
+          <h3>Study Timer</h3>
+          <p>Use the Pomodoro-style study timer to stay focused. Set goals and track your study sessions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="section">
+      <div class="section-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            How do I get matches? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Go to Discover and press ❤️ Like on profiles you're interested in. When that person also likes you back, it becomes a mutual match and you can both start chatting. Make sure your profile has a photo and bio — it increases your chances significantly!
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Why can't I see my profile photo? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            After uploading your photo in Profile, it may take a few seconds to appear. Make sure you are uploading a clear JPEG or PNG image under 5MB. The photo must clearly show your face. Try refreshing the page after uploading.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Is my identity hidden on the Confession Wall? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Yes! Confessions are completely anonymous. No name, email, or account is attached. We only store a random device ID so you can delete your own posts. You can also post without creating an account.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            How do I upload study materials? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            You need to be logged in to upload. Go to the Study page, fill in the title, select your category (CEE/IOE/NEB/Management) and subject, write a short description, then select your file. Supported formats: PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG. Max file size is 10MB.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Can I change my exam category later? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Yes! Go to your Profile and tap the Edit button. You can update your category, bio, interests, gender preference, and other details at any time.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Why am I not seeing any profiles in Discover? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            This happens when: (1) You've already seen all available profiles — they refresh every 7 days. (2) Your gender/category filter is too narrow — try selecting "All" in the filter. (3) There are no other users in your selected category yet. Invite your friends to join!
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            How do I send a voice message in chat? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            In the Chat screen, tap and hold the microphone button (🎤) to record a voice message. Release to send. Make sure you allow microphone permissions when the browser asks. Voice messages work on most modern phones and browsers.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            I forgot my password. How do I reset it? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            On the <a href="login.html">Login page</a>, click "Forgot Password?" and enter your email. You'll receive a password reset link in your email inbox. Check your spam folder if it doesn't appear within a few minutes.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            How do I delete my account? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Go to Profile, scroll to the bottom and tap "Delete Account." This will permanently remove your profile, matches, messages, and all uploaded content. This action cannot be undone.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Can I use EntranceHearts on my phone as an app? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Yes! EntranceHearts is a PWA (Progressive Web App). Open it in your phone browser, then tap the share button and select "Add to Home Screen" (iOS) or tap the install prompt (Android). It will work just like a native app — no App Store needed!
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="section">
+      <div class="section-title"><i class="fas fa-lightbulb"></i> Tips for the Best Experience</div>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <h4>📸 Add a Clear Photo</h4>
+          <p>Profiles with photos get 3x more matches. Use a recent selfie with good lighting.</p>
+        </div>
+        <div class="tip-card blue">
+          <h4>✍️ Write a Good Bio</h4>
+          <p>Mention your exam preparation year, hobbies, and what kind of friend or partner you're looking for.</p>
+        </div>
+        <div class="tip-card green">
+          <h4>🎯 Set Your Category</h4>
+          <p>Set the correct exam category (CEE, IOE, +2, Management) to appear in relevant searches.</p>
+        </div>
+        <div class="tip-card purple">
+          <h4>📚 Share Study Notes</h4>
+          <p>Upload past questions and notes to the library. Sharing helps the whole community!</p>
+        </div>
+        <div class="tip-card">
+          <h4>💬 Message First</h4>
+          <p>When you match, send a friendly first message! Ask about their exam prep or share a study tip.</p>
+        </div>
+        <div class="tip-card blue">
+          <h4>🔔 Allow Notifications</h4>
+          <p>Enable push notifications to never miss a new message from your match.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="section">
+      <div class="contact-box">
+        <h3>Still need help?</h3>
+        <p>Our team is here to support you. Reach out and we'll get back to you as soon as possible.</p>
+        <div class="contact-links">
+          <a href="profile.html#feedback" class="contact-btn primary"><i class="fas fa-comment-alt"></i> Send Feedback</a>
+          <a href="mailto:support@entrancehearts.app" class="contact-btn"><i class="fas fa-envelope"></i> Email Support</a>
+          <a href="index.html" class="contact-btn"><i class="fas fa-home"></i> Back to Home</a>
+          <a href="privacy.html" class="contact-btn"><i class="fas fa-shield-halved"></i> Privacy Policy</a>
+          <a href="terms.html" class="contact-btn"><i class="fas fa-file-contract"></i> Terms of Service</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="back-footer">
+      <a href="index.html" class="back-btn"><i class="fas fa-chevron-left"></i> Back to Home</a>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="browse.html" class="nav-item"><span>🔥</span><span>Discover</span></a>
+    <a href="chat.html" class="nav-item"><span>💬</span><span>Chats</span></a>
+    <a href="confessions.html" class="nav-item"><span>💌</span><span>Wall</span></a>
+    <a href="study.html" class="nav-item"><span>📚</span><span>Study</span></a>
+    <a href="profile.html" class="nav-item"><span>👤</span><span>Profile</span></a>
+  </div>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('eh_theme', newTheme);
+    document.getElementById('themeIcon').className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+  (function(){
+    const t = localStorage.getItem('eh_theme') || 'dark';
+    document.getElementById('themeIcon').className = t === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+  })();
+
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  const menuBtn = document.getElementById('mobileMenuBtn');
+  const mobMenu = document.getElementById('mobileMenu');
+  menuBtn.onclick = () => {
+    const open = mobMenu.classList.toggle('open');
+    menuBtn.textContent = open ? '✕' : '☰';
+  };
+  document.addEventListener('click', e => {
+    if (!mobMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+      mobMenu.classList.remove('open');
+      menuBtn.textContent = '☰';
+    }
+  });
+</script>
+<div id="offline-bar" style="display:none;position:fixed;top:60px;left:8px;right:8px;z-index:8000;background:rgba(185,28,28,0.97);backdrop-filter:blur(12px);color:#fff;padding:10px 16px;border-radius:14px;font-size:0.78rem;font-weight:600;font-family:'Inter',sans-serif;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">📡 No internet — some features may not work</div>
+<script>(function(){var b=document.getElementById('offline-bar');function u(){b.style.display=navigator.onLine?'none':'block';}window.addEventListener('online',u);window.addEventListener('offline',u);u();})();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
