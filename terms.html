@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>Terms of Service — EntranceHearts</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --bg:#06061a;
+      --card:rgba(255,255,255,0.055);
+      --border:rgba(255,255,255,0.09);
+      --nav:rgba(6,6,26,0.97);
+      --text:rgba(255,255,255,0.93);
+      --text-muted:rgba(255,255,255,0.55);
+      --text-faint:rgba(255,255,255,0.35);
+      --pink:#FF1493;
+      --pink-light:#FF6B9D;
+    }
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    .ambient{position:fixed;pointer-events:none;z-index:0;}
+    .amb1{top:-100px;left:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,20,147,0.11),transparent 70%);}
+    .amb2{bottom:-100px;right:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(110,40,210,0.09),transparent 70%);}
+    .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:14px 20px;background:var(--nav);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+    .back-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:0.9rem;transition:all 0.2s;flex-shrink:0;}
+    .back-btn:hover{background:rgba(255,255,255,0.12);}
+    .logo{font-size:1rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--pink-light));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+    .nav-right{margin-left:auto;}
+    .nav-right a{font-size:0.78rem;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:50px;transition:all 0.2s;}
+    .nav-right a:hover{color:var(--pink-light);background:rgba(255,20,147,0.08);}
+    .hero{padding:100px 20px 40px;text-align:center;position:relative;z-index:1;}
+    .hero-icon{font-size:2.5rem;margin-bottom:12px;}
+    .hero h1{font-size:1.8rem;font-weight:800;margin-bottom:8px;}
+    .hero p{color:var(--text-muted);font-size:0.85rem;line-height:1.6;}
+    .last-updated{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:0.75rem;color:var(--text-faint);margin-top:12px;}
+    .toc{max-width:680px;margin:0 auto 32px;padding:0 16px;position:relative;z-index:1;}
+    .toc-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px 24px;}
+    .toc-title{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--pink-light);margin-bottom:14px;}
+    .toc-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .toc-list a{color:var(--text-muted);text-decoration:none;font-size:0.83rem;padding:4px 0;display:flex;align-items:center;gap:8px;transition:color 0.2s;}
+    .toc-list a:hover{color:var(--pink-light);}
+    .toc-list a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--pink);flex-shrink:0;}
+    .content{max-width:680px;margin:0 auto;padding:0 16px 80px;position:relative;z-index:1;}
+    .section{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+    .section-icon{width:36px;height:36px;border-radius:12px;background:rgba(255,20,147,0.12);display:flex;align-items:center;justify-content:center;color:var(--pink);font-size:0.9rem;flex-shrink:0;}
+    .section h2{font-size:1rem;font-weight:700;}
+    .section p{font-size:0.84rem;line-height:1.75;color:var(--text-muted);margin-bottom:10px;}
+    .section p:last-child{margin-bottom:0;}
+    .section ul{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+    .section ul li{font-size:0.84rem;color:var(--text-muted);display:flex;align-items:flex-start;gap:10px;line-height:1.6;}
+    .section ul li::before{content:'→';color:var(--pink);flex-shrink:0;font-size:0.75rem;margin-top:2px;}
+    .section h3{font-size:0.88rem;font-weight:700;margin:16px 0 8px;color:var(--text);}
+    .warn-box{background:rgba(234,88,12,0.08);border:1px solid rgba(234,88,12,0.2);border-radius:14px;padding:14px 16px;margin-top:12px;}
+    .warn-box p{color:rgba(251,146,60,0.95)!important;font-weight:500;}
+    .highlight-box{background:rgba(255,20,147,0.06);border:1px solid rgba(255,20,147,0.15);border-radius:14px;padding:14px 16px;margin-top:12px;}
+    .highlight-box p{color:var(--text)!important;font-weight:500;}
+    .contact-card{background:linear-gradient(135deg,rgba(255,20,147,0.12),rgba(110,40,210,0.08));border:1px solid rgba(255,20,147,0.2);border-radius:20px;padding:28px 24px;text-align:center;margin-bottom:16px;}
+    .contact-card h2{font-size:1.1rem;font-weight:800;margin-bottom:8px;}
+    .contact-card p{font-size:0.84rem;color:var(--text-muted);margin-bottom:20px;}
+    .contact-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--pink),var(--pink-light));color:#fff;text-decoration:none;padding:11px 24px;border-radius:50px;font-size:0.84rem;font-weight:700;transition:all 0.2s;}
+    .contact-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,20,147,0.35);}
+    .back-top{display:block;text-align:center;color:var(--text-faint);font-size:0.78rem;text-decoration:none;padding:16px;transition:color 0.2s;}
+    .back-top:hover{color:var(--pink-light);}
+  </style>
+</head>
+<body>
+  <div class="ambient amb1"></div>
+  <div class="ambient amb2"></div>
+
+  <nav class="navbar">
+    <a class="back-btn" href="index.html"><i class="fa-solid fa-arrow-left"></i></a>
+    <a class="logo" href="index.html">💕 EntranceHearts</a>
+    <div class="nav-right"><a href="privacy.html">Privacy</a></div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-icon">📋</div>
+    <h1>Terms of Service</h1>
+    <p>By using EntranceHearts, you agree to these terms. Please read them carefully.</p>
+    <span class="last-updated"><i class="fa-regular fa-calendar"></i> Last updated: June 2025</span>
+  </div>
+
+  <div class="toc">
+    <div class="toc-card">
+      <div class="toc-title">Contents</div>
+      <ul class="toc-list">
+        <li><a href="#acceptance">Acceptance of terms</a></li>
+        <li><a href="#eligibility">Eligibility & age</a></li>
+        <li><a href="#account">Your account</a></li>
+        <li><a href="#conduct">Community guidelines</a></li>
+        <li><a href="#content">User content</a></li>
+        <li><a href="#matching">Matching & messaging</a></li>
+        <li><a href="#safety">Safety & reporting</a></li>
+        <li><a href="#termination">Account suspension</a></li>
+        <li><a href="#disclaimer">Disclaimers</a></li>
+        <li><a href="#contact-sec">Contact us</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="section" id="acceptance">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-handshake"></i></div>
+        <h2>Acceptance of Terms</h2>
+      </div>
+      <p>Welcome to EntranceHearts — Nepal's dating and community platform for entrance exam students. By creating an account or using any part of our service, you agree to these Terms of Service and our Privacy Policy.</p>
+      <p>If you do not agree with any part of these terms, please do not use EntranceHearts.</p>
+    </div>
+
+    <div class="section" id="eligibility">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-user-check"></i></div>
+        <h2>Eligibility & Age</h2>
+      </div>
+      <p>To use EntranceHearts you must:</p>
+      <ul>
+        <li>Be at least <strong>16 years old</strong></li>
+        <li>Be currently enrolled in or preparing for a Nepali entrance exam (CEE, IOE, +2, Management or equivalent)</li>
+        <li>Provide accurate and truthful information when registering</li>
+        <li>Not have been previously banned from the platform</li>
+      </ul>
+      <div class="warn-box">
+        <p>⚠️ Creating a fake account, impersonating another person, or misrepresenting your age will result in immediate and permanent account deletion.</p>
+      </div>
+    </div>
+
+    <div class="section" id="account">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-circle-user"></i></div>
+        <h2>Your Account</h2>
+      </div>
+      <p>You are responsible for:</p>
+      <ul>
+        <li>Keeping your login credentials secure and confidential</li>
+        <li>All activity that occurs under your account</li>
+        <li>Ensuring your profile information is accurate and up to date</li>
+        <li>Notifying us immediately if you suspect unauthorized access to your account</li>
+      </ul>
+      <p>One person may only have one active EntranceHearts account. Multiple accounts by the same person are not permitted.</p>
+    </div>
+
+    <div class="section" id="conduct">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+        <h2>Community Guidelines</h2>
+      </div>
+      <p>EntranceHearts is a respectful community. The following are strictly prohibited:</p>
+      <h3>❌ Never allowed</h3>
+      <ul>
+        <li>Harassment, bullying, threats, or intimidation of any user</li>
+        <li>Sending unsolicited explicit photos or sexual content</li>
+        <li>Hate speech based on caste, religion, gender, ethnicity, or disability</li>
+        <li>Scamming, catfishing, or any form of deception</li>
+        <li>Sharing another person's private information without consent (doxxing)</li>
+        <li>Using the platform for commercial solicitation, spam, or advertising</li>
+        <li>Creating fake profiles or pretending to be someone you are not</li>
+        <li>Distributing malware or attempting to hack the platform</li>
+      </ul>
+      <h3>✅ We encourage</h3>
+      <ul>
+        <li>Respectful, genuine conversations and connections</li>
+        <li>Sharing study materials and helping fellow aspirants</li>
+        <li>Reporting inappropriate behavior using the in-app report feature</li>
+        <li>Treating every user with the dignity you'd want yourself</li>
+      </ul>
+    </div>
+
+    <div class="section" id="content">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-image"></i></div>
+        <h2>User Content</h2>
+      </div>
+      <p>When you upload photos, write a bio, post confessions, or share study materials, you retain ownership of that content. By posting, you grant EntranceHearts a non-exclusive licence to display and store that content to operate the service.</p>
+      <ul>
+        <li>Your profile photo must be a real, clear photo of your own face</li>
+        <li>Study materials you share must be your own or freely shareable (no copyrighted content)</li>
+        <li>Confessions are posted anonymously — do not reveal others' identities</li>
+        <li>We may remove any content that violates these terms without notice</li>
+      </ul>
+    </div>
+
+    <div class="section" id="matching">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-fire"></i></div>
+        <h2>Matching & Messaging</h2>
+      </div>
+      <p>Messaging is only possible between two users who have mutually liked each other ("matched"). This is a safety feature to prevent unwanted contact.</p>
+      <ul>
+        <li>You may send text messages and images to your matches</li>
+        <li>Do not send unsolicited explicit content of any kind — this leads to immediate ban</li>
+        <li>Matches may unmatch or block you at any time; respect their choice</li>
+        <li>The AI Match feature provides suggestions only — we make no guarantee of compatibility</li>
+      </ul>
+      <div class="highlight-box">
+        <p>💡 If someone makes you uncomfortable, use the Block or Report button. Our moderation team reviews reports within 24 hours.</p>
+      </div>
+    </div>
+
+    <div class="section" id="safety">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-shield-heart"></i></div>
+        <h2>Safety & Reporting</h2>
+      </div>
+      <p>Your safety is our priority. We ask all users to:</p>
+      <ul>
+        <li>Meet people from this app in public places for the first time</li>
+        <li>Tell a trusted friend or family member when meeting someone new</li>
+        <li>Trust your instincts — if something feels wrong, leave and report it</li>
+        <li>Never send money to someone you haven't met in person</li>
+        <li>Report suspicious accounts using the in-app report button</li>
+      </ul>
+      <p>EntranceHearts is not responsible for the offline behaviour of users. We encourage responsible, safe meeting practices.</p>
+    </div>
+
+    <div class="section" id="termination">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-ban"></i></div>
+        <h2>Account Suspension & Termination</h2>
+      </div>
+      <p>We reserve the right to suspend or permanently delete accounts that:</p>
+      <ul>
+        <li>Violate any part of these Terms of Service or Community Guidelines</li>
+        <li>Receive multiple verified reports from other users</li>
+        <li>Are found to be fake, duplicate, or deceptive</li>
+        <li>Attempt to abuse or exploit the platform</li>
+      </ul>
+      <p>You may delete your own account at any time by contacting us. Upon deletion, your profile, messages, and personal data will be permanently removed within 30 days.</p>
+    </div>
+
+    <div class="section" id="disclaimer">
+      <div class="section-header">
+        <div class="section-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h2>Disclaimers</h2>
+      </div>
+      <p>EntranceHearts is provided "as is" without warranties of any kind. We are a small independent platform and we cannot guarantee:</p>
+      <ul>
+        <li>Uninterrupted or error-free service at all times</li>
+        <li>That you will find a match or form a relationship</li>
+        <li>The accuracy of any user-provided profile information</li>
+        <li>The safety of meeting anyone you connect with online</li>
+      </ul>
+      <p>To the fullest extent permitted by law, EntranceHearts is not liable for any indirect, incidental, or consequential damages arising from your use of the service.</p>
+      <p>These terms are governed by the laws of Nepal.</p>
+    </div>
+
+    <div class="contact-card" id="contact-sec">
+      <h2>Questions about our terms?</h2>
+      <p>We're happy to clarify anything. We respond to all queries within 48 hours.</p>
+      <a href="mailto:support@entrancehearts.com" class="contact-btn">
+        <i class="fa-solid fa-envelope"></i> support@entrancehearts.com
+      </a>
+    </div>
+
+    <a href="#" class="back-top"><i class="fa-solid fa-arrow-up"></i> Back to top</a>
+
+  </div>
+
+  <script>
+    if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  </script>
+</body>
+</html>
