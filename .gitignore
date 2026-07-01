@@ -1,0 +1,26 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Replit internal
+.replit
+replit.nix
+.upm/
+.cache/
+.local/
+.agents/
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+
+# Env / secrets
+.env
+.env.*
