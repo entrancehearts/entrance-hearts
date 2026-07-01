@@ -1,0 +1,47 @@
+{
+  "name": "EntranceHearts 💕",
+  "short_name": "EntranceHearts",
+  "description": "Nepal's dating app for CEE, IOE, +2 and Management students",
+  "start_url": "/browse.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#06061a",
+  "theme_color": "#FF1493",
+  "orientation": "portrait",
+  "categories": ["social", "education"],
+  "lang": "en-NP",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Discover",
+      "short_name": "Discover",
+      "url": "/browse.html",
+      "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Chats",
+      "short_name": "Chats",
+      "url": "/chat.html",
+      "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Confession Wall",
+      "short_name": "Wall",
+      "url": "/confessions.html",
+      "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+    }
+  ]
+}
