@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>Page Not Found — EntranceHearts</title>
+  <link rel="icon" href="icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;}
+    body{font-family:'Inter',sans-serif;background:#06061a;color:rgba(255,255,255,0.93);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;overflow:hidden;}
+    .amb{position:fixed;pointer-events:none;z-index:0;border-radius:50%;}
+    .amb1{top:-100px;left:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(255,20,147,0.10),transparent 70%);}
+    .amb2{bottom:-80px;right:-80px;width:380px;height:380px;background:radial-gradient(circle,rgba(110,40,210,0.09),transparent 70%);}
+    .card{position:relative;z-index:1;background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.09);border-radius:28px;padding:44px 32px;max-width:360px;width:100%;}
+    .big-num{font-size:5rem;font-weight:900;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:12px;}
+    h1{font-size:1.3rem;font-weight:800;margin-bottom:8px;}
+    .sub{font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:28px;}
+    .btn-group{display:flex;flex-direction:column;gap:10px;}
+    .btn-primary{background:linear-gradient(135deg,#FF1493,#FF6B9D);color:#fff;text-decoration:none;padding:13px 24px;border-radius:50px;font-size:0.88rem;font-weight:700;transition:all 0.2s;display:block;}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,20,147,0.35);}
+    .btn-secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);text-decoration:none;padding:12px 24px;border-radius:50px;font-size:0.88rem;font-weight:600;transition:all 0.2s;display:block;}
+    .btn-secondary:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.9);}
+    .logo{position:relative;z-index:1;margin-top:24px;font-size:0.85rem;font-weight:800;background:linear-gradient(135deg,#FF1493,#FF6B9D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+    .float-emoji{font-size:3rem;margin-bottom:16px;display:block;animation:float 3s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  </style>
+</head>
+<body>
+  <div class="amb amb1"></div>
+  <div class="amb amb2"></div>
+  <div class="card">
+    <span class="float-emoji">💔</span>
+    <div class="big-num">404</div>
+    <h1>Page Not Found</h1>
+    <p class="sub">Looks like this page went on a study break and never came back. Let's get you somewhere useful.</p>
+    <div class="btn-group">
+      <a href="browse.html" class="btn-primary">🔥 Discover Profiles</a>
+      <a href="index.html" class="btn-secondary">🏠 Back to Home</a>
+    </div>
+  </div>
+  <a href="index.html" class="logo">💕 EntranceHearts</a>
+  <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body>
+</html>
